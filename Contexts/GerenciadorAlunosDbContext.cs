@@ -9,9 +9,9 @@ public class GerenciadorAlunosDbContext : DbContext
     // R: O DbSet está sim referenciando os moldes, pois representa a tabela como um todo. A "Alunos" seria a variável que será utilizada para acessar a referida tabela.
     // Dúvida: Por que aqui temos novos get e sets? Nas minhas moldes já possuo as regras dos gets e sets criadas. Como fica?
     // R: Esses get e set seriam pertencentes à tabela, e não aos campos do Aluno e Mensalidade. As regras criadas para as duas ficam à salvo e respeitadas pelo EF.
-    public DbSet<Aluno> Alunos { get; set; }
-    public DbSet<Mensalidade> Mensalidades { get; set; }
-    public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<AlunoModel> Alunos { get; set; }
+    public DbSet<MensalidadeModel> Mensalidades { get; set; }
+    public DbSet<UsuarioModel> Usuarios { get; set; }
 
     // Dúvida: seria um construtor padrão?
     // R: Sim. A classe GerenciadorAlunosContext herda da classe DbContext. O DbContextOptions é o pacote de configurações que contém a minha string de conexão com o MySQL.
@@ -26,27 +26,27 @@ public class GerenciadorAlunosDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Mapeamento da tabela Alunos
-        modelBuilder.Entity<Aluno>().ToTable("alunos");
-        modelBuilder.Entity<Aluno>().Property(a => a.Id).HasColumnName("id");
-        modelBuilder.Entity<Aluno>().Property(a => a.Nome).HasColumnName("nome");
-        modelBuilder.Entity<Aluno>().Property(a => a.Cpf).HasColumnName("cpf");
-        modelBuilder.Entity<Aluno>().Property(a => a.Email).HasColumnName("email");
-        modelBuilder.Entity<Aluno>().Property(a => a.Celular).HasColumnName("celular");
+        modelBuilder.Entity<AlunoModel>().ToTable("alunos");
+        modelBuilder.Entity<AlunoModel>().Property(a => a.Id).HasColumnName("id");
+        modelBuilder.Entity<AlunoModel>().Property(a => a.Nome).HasColumnName("nome");
+        modelBuilder.Entity<AlunoModel>().Property(a => a.Cpf).HasColumnName("cpf");
+        modelBuilder.Entity<AlunoModel>().Property(a => a.Email).HasColumnName("email");
+        modelBuilder.Entity<AlunoModel>().Property(a => a.Celular).HasColumnName("celular");
 
         // Mapeamento da tabela Mensalidades
-        modelBuilder.Entity<Mensalidade>().ToTable("mensalidades");
-        modelBuilder.Entity<Mensalidade>().Property(m => m.Id).HasColumnName("id");
-        modelBuilder.Entity<Mensalidade>().Property(m => m.AlunoId).HasColumnName("aluno_id");
-        modelBuilder.Entity<Mensalidade>().Property(m => m.ValorMensalidade).HasColumnName("valor");
-        modelBuilder.Entity<Mensalidade>().Property(m => m.DataVencimento).HasColumnName("data_vencimento");
-        modelBuilder.Entity<Mensalidade>().Property(m => m.Status).HasColumnName("status");
-        modelBuilder.Entity<Mensalidade>().Property(m => m.DataPagamento).HasColumnName("data_pagamento");
+        modelBuilder.Entity<MensalidadeModel>().ToTable("mensalidades");
+        modelBuilder.Entity<MensalidadeModel>().Property(m => m.Id).HasColumnName("id");
+        modelBuilder.Entity<MensalidadeModel>().Property(m => m.AlunoId).HasColumnName("aluno_id");
+        modelBuilder.Entity<MensalidadeModel>().Property(m => m.ValorMensalidade).HasColumnName("valor");
+        modelBuilder.Entity<MensalidadeModel>().Property(m => m.DataVencimento).HasColumnName("data_vencimento");
+        modelBuilder.Entity<MensalidadeModel>().Property(m => m.Status).HasColumnName("status");
+        modelBuilder.Entity<MensalidadeModel>().Property(m => m.DataPagamento).HasColumnName("data_pagamento");
 
-        modelBuilder.Entity<Usuario>().ToTable("usuarios");
+        modelBuilder.Entity<UsuarioModel>().ToTable("usuarios");
         // estava tendo problemas pela falta de identificação da minha primary key nessa tabela
-        modelBuilder.Entity<Usuario>().HasKey(u => u.UserId);
-        modelBuilder.Entity<Usuario>().Property(u => u.UserId).HasColumnName("userId");
-        modelBuilder.Entity<Usuario>().Property(u => u.Username).HasColumnName("username");
-        modelBuilder.Entity<Usuario>().Property(u => u.HashPassword).HasColumnName("password");
+        modelBuilder.Entity<UsuarioModel>().HasKey(u => u.UserId);
+        modelBuilder.Entity<UsuarioModel>().Property(u => u.UserId).HasColumnName("userId");
+        modelBuilder.Entity<UsuarioModel>().Property(u => u.Username).HasColumnName("username");
+        modelBuilder.Entity<UsuarioModel>().Property(u => u.HashPassword).HasColumnName("password");
     }
 }

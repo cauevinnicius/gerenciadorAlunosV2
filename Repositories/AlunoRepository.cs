@@ -18,7 +18,7 @@ public class AlunoRepository
     // Método para efetuar o cadastro. Agora eu posso simplesmente chamar meu molde Aluno e criar um objeto novoAluno (WTF)
     // A partir de agora, com os async/await, temos uma Task ao invés de um void, por exemplo.
     // pelo padrão, os nomes tem a inclusão do sufixo "Async"
-    public async Task CadastrarAsync(Aluno novoAluno)
+    public async Task CadastrarAsync(AlunoModel novoAluno)
     {
         try
         {
@@ -33,12 +33,12 @@ public class AlunoRepository
     }
 
     // Perguntar pro Sérgio: pesquisando na internet, vi que não seria uma boa prática inserir try/catch em todos. Para métodos de leitura (listar, selecionar, verificarpendencias) não faz sentido, mas tão somente para escritas (cadatro, alterar e deletar)
-    public async Task<List<Aluno>> ListarAsync()
+    public async Task<List<AlunoModel>> ListarAsync()
     {
         return await _context.Alunos.ToListAsync(); // literalmente 46 linhas se transformaram em 4.
     }
 
-    public async Task<List<Aluno>> SelecionarAsync(string parametroBusca)
+    public async Task<List<AlunoModel>> SelecionarAsync(string parametroBusca)
     {
         // só para eu não esquecer: tive a ideia de deixar algo mais dinamico, buscando tanto pelo nome ou pelo ID, por exemplo. Se for digitado um numero, então o usuário digitou um ID. Se não, o usuário digitou um nome.
         if (int.TryParse(parametroBusca, out int idBusca))
@@ -53,7 +53,7 @@ public class AlunoRepository
     }
 
     // Método para alterar o cadastro. Agora também só passo o Aluno e o objeto alunoEditado
-   public async Task AlterarAsync(Aluno alunoEditado)
+   public async Task AlterarAsync(AlunoModel alunoEditado)
     {
         try
         {

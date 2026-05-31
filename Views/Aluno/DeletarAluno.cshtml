@@ -1,0 +1,42 @@
+@model GerenciadorAlunosV2.Models.AlunoModel
+
+@{
+    ViewData["Title"] = "Deletar Aluno";
+}
+
+<div class="container mt-4">
+    <h2 class="text-danger">Excluir Cadastro</h2>
+    <hr />
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger">
+            <strong>Ops!</strong> @ViewBag.Erro
+        </div>
+    }
+
+    <div class="alert alert-warning">
+        <h4>Atenção!</h4>
+        <p>Você está prestes a excluir o aluno <strong>@Model.Nome</strong>. Esta ação não poderá ser desfeita.</p>
+    </div>
+
+    <div class="card mb-4" style="max-width: 500px;">
+        <div class="card-header">
+            <strong>Dados do Aluno</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>ID:</strong> @Model.Id</li>
+            <li class="list-group-item"><strong>CPF:</strong> @Model.Cpf</li>
+            <li class="list-group-item"><strong>E-mail:</strong> @Model.Email</li>
+            <li class="list-group-item"><strong>Celular:</strong> @Model.Celular</li>
+        </ul>
+    </div>
+
+    <form asp-controller="Aluno" asp-action="ConfirmarDelecao" method="post">
+        
+        <input type="hidden" asp-for="Id" />
+        
+        <button type="submit" class="btn btn-danger">Sim, desejo realizar a exclusão!</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar e Voltar</a>
+    </form>
+</div>

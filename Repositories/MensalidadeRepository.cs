@@ -14,7 +14,7 @@ public class MensalidadeRepository
         _context = context;
     }
 
-    public async Task LancarMensalidadeAsync(Mensalidade novaMensalidade)
+    public async Task LancarMensalidadeAsync(MensalidadeModel novaMensalidade)
     {
         try
         {
@@ -47,20 +47,20 @@ public class MensalidadeRepository
             Console.WriteLine($"Falha ao registrar: {excecao}");
         }
     }
-    public async Task<List<Mensalidade>> ListarMensalidadesAsync()
+    public async Task<List<MensalidadeModel>> ListarMensalidadesAsync()
     {
         return await _context.Mensalidades.ToListAsync();
     }
 
     // a escrita de retorno está dessa forma para fins de organização. De fato, seria posto tudo em uma única linha
-    public async Task<List<Mensalidade>> VerificaPendenciasAsync(int alunoId)
+    public async Task<List<MensalidadeModel>> VerificaPendenciasAsync(int alunoId)
     {
         return await _context.Mensalidades
             .Where(m => m.AlunoId == alunoId && m.Status == "pendente")
             .ToListAsync();
     }
 
-    public async Task<bool> EditarMensalidadeAsync(Mensalidade mensalidadeEditada)
+    public async Task<bool> EditarMensalidadeAsync(MensalidadeModel mensalidadeEditada)
     {
         try
         {
