@@ -1,0 +1,61 @@
+@model GerenciadorAlunosV2.Models.MensalidadeModel
+
+@{
+    ViewData["Title"] = "Lançar Mensalidade";
+    var alunos = ViewBag.ListaAlunos as IEnumerable<GerenciadorAlunosV2.Models.AlunoModel>;
+}
+
+<div class="container mt-4">
+    <h2>Lançar Nova Mensalidade</h2>
+    <hr />
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger"><strong>Hmm.. algo deu errado!</strong> @ViewBag.Erro</div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-controller="Mensalidade" asp-action="LancarMensalidade" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Selecione o Aluno(a)</label>
+                    <select asp-for="AlunoId" class="form-select">
+                        <option value="">-- Escolha um aluno --</option>
+                        @if (alunos != null)
+                        {
+                            foreach (var a in alunos)
+                            {
+                                // O value guarda o ID, o texto mostra o Nome!
+                                <option value="@a.Id">@a.Nome (CPF: @a.Cpf)</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Valor da Mensalidade (R$)</label>
+                    <input asp-for="ValorMensalidade" type="number" step="0.01" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Data de Vencimento</label>
+                    <input asp-for="DataVencimento" type="date" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Status da Mensalidade</label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="pendente" selected>Pendente</option>
+                        <option value="pago">Pago</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success">Salvar Lançamento</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+
+            </form>
+        </div>
+    </div>
+</div>

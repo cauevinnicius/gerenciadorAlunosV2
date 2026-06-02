@@ -16,35 +16,20 @@ public class MensalidadeRepository
 
     public async Task LancarMensalidadeAsync(MensalidadeModel novaMensalidade)
     {
-        try
-        {
-            novaMensalidade.DataVencimento = DateTime.Now.AddDays(30);
-            _context.Mensalidades.Add(novaMensalidade);
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception excecao)
-        {
-            Console.WriteLine($"Falha ao cadastrar: {excecao.Message}");
-        }
+        novaMensalidade.DataVencimento = DateTime.Now.AddDays(30);
+        _context.Mensalidades.Add(novaMensalidade);
+        await _context.SaveChangesAsync();
     }
 
     public async Task RegistrarPagamentoAsync(int idMensalidade, DateTime dataPagamento)
     {
-        try
-        {
-            var mensalidade = await _context.Mensalidades.FindAsync(idMensalidade);
+        var mensalidade = await _context.Mensalidades.FindAsync(idMensalidade);
 
-            if (mensalidade != null)
-            {
-                mensalidade.Status = "pago";
-                mensalidade.DataPagamento = dataPagamento;
-
-                await _context.SaveChangesAsync();
-            }
-        }
-        catch (Exception excecao)
+        if (mensalidade != null)
         {
-            Console.WriteLine($"Falha ao registrar: {excecao}");
+            mensalidade.Status = "pago";
+            mensalidade.DataPagamento = dataPagamento;
+            await _context.SaveChangesAsync();
         }
     }
     public async Task<List<MensalidadeModel>> ListarMensalidadesAsync()
@@ -62,32 +47,17 @@ public class MensalidadeRepository
 
     public async Task<bool> EditarMensalidadeAsync(MensalidadeModel mensalidadeEditada)
     {
-        try
-        {
-            _context.Mensalidades.Update(mensalidadeEditada);
-            return await _context.SaveChangesAsync() > 0; // salvar apenas se for maior que zero
-        }
-        catch (Exception excecao)
-        {
-            Console.WriteLine($"Falha ao alterar no banco de dados: {excecao.Message}");
-            return false;
-        }
+        _context.Mensalidades.Update(mensalidadeEditada);
+        return await _context.SaveChangesAsync() > 0; // salvar apenas se for maior que zero
     }
 
     public async Task ExcluirMensalidadeAsync(int id)
     {
-        try
+        var mensalidade = await _context.Mensalidades.FindAsync(id);
+        if (mensalidade != null)
         {
-            var mensalidade = await _context.Mensalidades.FindAsync(id);
-            if (mensalidade != null)
-            {
-                _context.Mensalidades.Remove(mensalidade);
-                await _context.SaveChangesAsync();
-            }
-        }
-        catch (Exception excecao)
-        {
-            Console.WriteLine($"Falha ao alterar no banco de dados: {excecao.Message}");
+            _context.Mensalidades.Remove(mensalidade);
+            await _context.SaveChangesAsync();
         }
     }
 }

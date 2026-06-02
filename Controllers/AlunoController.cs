@@ -35,6 +35,26 @@ public class AlunoController : Controller
     // faço um método assincrono pra cadastrar o aluno pq preciso pedir informações "de fora". Pego meu modelo e crio um objeto pra ele
     public async Task <IActionResult> CadastrarAluno(AlunoModel novoAluno)
     {
+        // Como lá na minha Repository tinha os try/catch ainda do meu appconsole, nao tava dando pra entender o que tava errado na hora de cadastrar
+        // Então eu retirei todos e pesquisei uma maneira mais eficiente de apresentar os erros ao usuário
+        // a ideia seria q o aspnet nos "avisa" se algum set da nossa Model barrou algo
+        if (!ModelState.IsValid)
+        {
+            // procuro qual erro que a model gerou
+            var erro = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault();
+
+            if (erro != null && erro.Exception != null)
+            {
+                ViewBag.Erro = erro.Exception.Message; // aqui busca do ArgumentException
+            }
+            else if (erro != null)
+            {
+                ViewBag.Erro = erro.ErrorMessage;
+            }
+
+            return View(novoAluno);
+        }
+        // se deu tudo certo, aí sim posso seguir pro banco
         try
         {
             // como já tenho meu repository instanciado ali em cima, posso chamar o método pra cadastrar no banco o meu novoAluno
@@ -43,14 +63,6 @@ public class AlunoController : Controller
             // se deu td certo, a ideia seria retornar à tela principal
             return RedirectToAction("Index");
         }
-        // posso por minhas excecoes previstas na minha classe molde de Aluno (incrível!)
-        catch (ArgumentException excecao)
-        {
-            ViewBag.Erro = excecao.Message;
-            // pra não recomeçar do zero, a ideia seria manter os dados já digitados
-            return View(novoAluno);
-        }
-        // e, também, minhas excecoes prevista no db
         catch (Exception excecao)
         {
             ViewBag.Erro = "Erro interno " + excecao.Message;
@@ -80,6 +92,22 @@ public class AlunoController : Controller
     [HttpPost]
     public async Task <IActionResult> EditarAluno (AlunoModel alunoEditado)
     {
+        if (!ModelState.IsValid)
+        {
+            // procuro qual erro que a model gerou
+            var erro = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault();
+
+            if (erro != null && erro.Exception != null)
+            {
+                ViewBag.Erro = erro.Exception.Message; // aqui busca do ArgumentException
+            }
+            else if (erro != null)
+            {
+                ViewBag.Erro = erro.ErrorMessage;
+            }
+
+            return View(alunoEditado);
+        }
         try
         {
             // mando o aluno editado pro meu repository fazer o uptade por meio do AlterarAsync

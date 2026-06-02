@@ -1,0 +1,57 @@
+@model IEnumerable<GerenciadorAlunosV2.Models.MensalidadeModel>
+
+@{
+    ViewData["Title"] = "Relatório de Mensalidades";
+    // essa precisei de auxilio. Basicamente, pego a listagem de alunos q o controller enviou
+    var alunos = ViewBag.ListaAlunos as IEnumerable<GerenciadorAlunosV2.Models.AlunoModel>;        
+}
+<div class="container mt-4">
+    <h2 class="mb-4">=== Relatório Geral de Mensalidades ===</h2>
+
+    <a asp-action="LancarMensalidade" class="btn btn-primary mb-3">Lançar Nova Mensalidade</a>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover border">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Aluno</th>
+                    <th>Valor (R$)</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center py-4">Não há mensalidades cadastradas.</td></tr>
+                }
+                else
+                {
+                    @foreach (var m in Model)
+                    {
+                        // Procura o nome do aluno na lista (Se não achar, escreve "Desconhecido")
+                        string nomeAluno = alunos?.FirstOrDefault(a => a.Id == m.AlunoId)?.Nome ?? "Desconhecido";
+
+                        <tr>
+                            <td>@m.Id</td>
+                            <td>@nomeAluno</td>
+                            <td>@m.ValorMensalidade.ToString("C")</td> <td>@m.DataVencimento.ToShortDateString()</td>
+                            <td>
+                                @if(m.Status == "pendente") { <span class="badge bg-warning text-dark">Pendente</span> }
+                                else if(m.Status == "pago") { <span class="badge bg-success">Pago</span> }
+                                else { <span class="badge bg-danger">Cancelado</span> }
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-info">Pagar</button>
+                                <button class="btn btn-sm btn-warning">Editar</button>
+                                <button class="btn btn-sm btn-danger">Excluir</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

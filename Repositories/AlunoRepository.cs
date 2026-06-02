@@ -20,19 +20,13 @@ public class AlunoRepository
     // pelo padrão, os nomes tem a inclusão do sufixo "Async"
     public async Task CadastrarAsync(AlunoModel novoAluno)
     {
-        try
-        {
-            _context.Alunos.Add(novoAluno); // adição do nosso objeto novoAluno na memória
-            // dai no SaveChanges eu incluo um await 
-            await _context.SaveChangesAsync(); // o próprio EF montar o insert sozinho e executa :O
-        }
-        catch (Exception excecao) //Catch trata exceções apenas. 
-        {
-            Console.WriteLine($"Falha ao cadastrar: {excecao.Message}");
-        }
+        // Atualização no ASPNET - retirei todos os try/catch daqui e os mantive apenas no Controller. 
+        // O pq: no cadastro ou edição, não apareciam as mensagens devidas e o usuário nunca sabia o q tava acontecendo
+        _context.Alunos.Add(novoAluno); // adição do nosso objeto novoAluno na memória
+        // dai no SaveChanges eu incluo um await 
+        await _context.SaveChangesAsync(); // o próprio EF montar o insert sozinho e executa :O
     }
 
-    // Perguntar pro Sérgio: pesquisando na internet, vi que não seria uma boa prática inserir try/catch em todos. Para métodos de leitura (listar, selecionar, verificarpendencias) não faz sentido, mas tão somente para escritas (cadatro, alterar e deletar)
     public async Task<List<AlunoModel>> ListarAsync()
     {
         return await _context.Alunos.ToListAsync(); // literalmente 46 linhas se transformaram em 4.
@@ -55,33 +49,19 @@ public class AlunoRepository
     // Método para alterar o cadastro. Agora também só passo o Aluno e o objeto alunoEditado
    public async Task AlterarAsync(AlunoModel alunoEditado)
     {
-        try
-        {
-            // O EF busca o aluno, vê o que mudou e faz o UPDATE apenas do necessário
-            _context.Alunos.Update(alunoEditado);
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception excecao)
-        {
-            Console.WriteLine($"Erro ao alterar: {excecao.Message}");
-        }
+        // O EF busca o aluno, vê o que mudou e faz o UPDATE apenas do necessário
+        _context.Alunos.Update(alunoEditado);
+        await _context.SaveChangesAsync();
     }
 
     // Método para deletar o cadastro
     public async Task DeletarAsync(int id)
     {
-        try
+        var aluno = _context.Alunos.Find(id); // Busca o aluno pelo ID
+        if (aluno != null)
         {
-            var aluno = _context.Alunos.Find(id); // Busca o aluno pelo ID
-            if (aluno != null)
-            {
-                _context.Alunos.Remove(aluno);
-                await _context.SaveChangesAsync();
-            }
-        }
-        catch (Exception excecao)
-        {
-            Console.WriteLine($"Erro ao deletar: {excecao.Message}");
+            _context.Alunos.Remove(aluno);
+            await _context.SaveChangesAsync();
         }
     }
 }

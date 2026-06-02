@@ -11,7 +11,7 @@
     @if (ViewBag.Erro != null)
     {
         <div class="alert alert-danger">
-            <strong>Ops!</strong> @ViewBag.Erro
+            <strong>Hmm.. algo deu errado!</strong> @ViewBag.Erro
         </div>
     }
 
@@ -25,7 +25,7 @@
             <strong>Dados do Aluno</strong>
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item"><strong>ID:</strong> @Model.Id</li>
+            <li class="list-group-item"><strong>Nome:</strong>@Model.Nome</li>
             <li class="list-group-item"><strong>CPF:</strong> @Model.Cpf</li>
             <li class="list-group-item"><strong>E-mail:</strong> @Model.Email</li>
             <li class="list-group-item"><strong>Celular:</strong> @Model.Celular</li>
