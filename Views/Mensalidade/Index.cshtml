@@ -3,10 +3,16 @@
 @{
     ViewData["Title"] = "Relatório de Mensalidades";
     // essa precisei de auxilio. Basicamente, pego a listagem de alunos q o controller enviou
-    var alunos = ViewBag.ListaAlunos as IEnumerable<GerenciadorAlunosV2.Models.AlunoModel>;        
+    var alunos = ViewBag.ListaAlunos as IEnumerable<GerenciadorAlunosV2.Models.AlunoModel>;
 }
 <div class="container mt-4">
     <h2 class="mb-4">=== Relatório Geral de Mensalidades ===</h2>
+    @if (TempData["ErroPagamento"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErroPagamento"]
+        </div>
+    }
 
     <a asp-action="LancarMensalidade" class="btn btn-primary mb-3">Lançar Nova Mensalidade</a>
 
@@ -23,9 +29,12 @@
                 </tr>
             </thead>
             <tbody>
+                // uma condicional pra que apareça uma mensagem ao usuário quando não tiver mensalidades cadastradas
                 @if (!Model.Any())
                 {
-                    <tr><td colspan="6" class="text-center py-4">Não há mensalidades cadastradas.</td></tr>
+                    <tr>
+                        <td colspan="6" class="text-center py-4">Não há mensalidades cadastradas.</td>
+                    </tr>
                 }
                 else
                 {
@@ -37,16 +46,39 @@
                         <tr>
                             <td>@m.Id</td>
                             <td>@nomeAluno</td>
-                            <td>@m.ValorMensalidade.ToString("C")</td> <td>@m.DataVencimento.ToShortDateString()</td>
+                            <td>@m.ValorMensalidade.ToString("C")</td>
+                            <td>@m.DataVencimento.ToShortDateString()</td>
                             <td>
-                                @if(m.Status == "pendente") { <span class="badge bg-warning text-dark">Pendente</span> }
-                                else if(m.Status == "pago") { <span class="badge bg-success">Pago</span> }
-                                else { <span class="badge bg-danger">Cancelado</span> }
+                                @if (m.Status == "pendente")
+                                {
+                                    <span class="badge bg-warning text-dark">Pendente</span>
+                                }
+                                else if (m.Status == "pago")
+                                {
+
+                                    <span class="badge bg-success">Pago</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge bg-danger">Cancelado</span>
+                                }
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-info">Pagar</button>
-                                <button class="btn btn-sm btn-warning">Editar</button>
-                                <button class="btn btn-sm btn-danger">Excluir</button>
+                                @* somente quem tiver com a mensalidade pendente terá a opção de pagar. primeiro eu fiz com que o usuário clicasse no botao e ai ia pra uma nova página de confirmação
+                                depois, pra melhorar a usabilidade, achei q fazia sentido só clicar em "pagar" e já mudar o status e o botão
+                                a solução que eu encontrei seria criar um mini formulario invisível. ficou bonito, mas meio ruim de usabilidade*@
+                                @if (m.Status == "pendente")
+                                {
+                                    <form asp-controller="Mensalidade" asp-action="PagarMensalidade" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@m.Id" />
+                                        <button type="submit" class="btn btn-sm btn-info text-white">Pagar</button>
+                                    </form>
+                                }
+                                <a asp-controller="Mensalidade" asp-action="Editar" asp-route-id="@m.Id"
+                                   class="btn btn-sm btn-warning">Editar</a>
+                                <a asp-controller="Mensalidade" asp-action="Deletar" asp-route-id="@m.Id"
+                                   class="btn btn-sm btn-danger">Excluir</a>
                             </td>
                         </tr>
                     }

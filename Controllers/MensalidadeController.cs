@@ -64,4 +64,85 @@ public class MensalidadeController : Controller
             return View(novaMensalidade);
         }
     }
+
+    // replicando o que escrevi lá na index da mensalidade: minha primeira ideia era uma nova página de confirmação de pagamento
+    // dps achei mais interessante apenas clicar no botão e já mudar o status. Então eu só preciso de um post
+    [HttpPost]
+    public async Task <IActionResult> PagarMensalidade (int id)
+    {
+        try
+        {
+            // primeiro eu busco a fatura
+            var faturas = await _mensalidadeRepository.ListarMensalidadesAsync();
+            var faturaEncontrada = faturas.FirstOrDefault(m => m.Id == id);
+
+            // dai sim eu altero e faço o salvamento
+            if (faturaEncontrada != null && faturaEncontrada.Status == "pendente")
+            {
+                faturaEncontrada.Status = "pago";
+                faturaEncontrada.DataPagamento = DateTime.Now;
+
+                await _mensalidadeRepository.EditarMensalidadeAsync(faturaEncontrada);
+            }
+
+            return RedirectToAction("Index");
+        }
+        catch (Exception excecao)
+        {
+            // aqui eu dou um alerta temporário pro usuário que deu erro ao pagar 
+            TempData["ErroPagamento"] = "Erro ao pagar a mensalidade: " + excecao.Message;
+            return RedirectToAction("Index");
+        }
+    }
+
+    [HttpGet]
+    public async Task <IActionResult> EditarMensalidade (int id)
+    {
+        // primeiro busco a mensalidade
+        var faturas = await _mensalidadeRepository.ListarMensalidadesAsync();
+        var faturaEncontrada = faturas.FirstOrDefault(m => m.Id == id);
+
+        if (faturaEncontrada == null)
+        {
+            return NotFound();
+        }
+
+        // tenho q mandar minha lista de alunos tb
+        ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
+
+        return View(faturaEncontrada);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditarMensalidade (MensalidadeModel faturaEditada)
+    {
+        // reaproveitei a validação que fiz na de cadastro.
+        if (!ModelState.IsValid)
+        {
+            ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
+            
+            var erro = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault();
+            if (erro != null && erro.Exception != null)
+            {
+                ViewBag.Erro = erro.Exception.Message;
+            }
+            else if (erro != null)
+            {
+                ViewBag.Erro = erro.ErrorMessage;
+            }
+            return View(faturaEditada);
+        }
+        
+        try
+        {
+            await _mensalidadeRepository.EditarMensalidadeAsync(faturaEditada);
+            return RedirectToAction("Index");
+        }
+        catch (Exception excecao)
+        {
+            ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
+            ViewBag.Erro = "Erro interno: " + excecao.Message;
+            return View(faturaEditada);
+        }
+    }
 }
