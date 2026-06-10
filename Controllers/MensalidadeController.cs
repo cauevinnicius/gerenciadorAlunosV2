@@ -145,4 +145,40 @@ public class MensalidadeController : Controller
             return View(faturaEditada);
         }
     }
+
+    [HttpGet]
+    public async Task <IActionResult> DeletarMensalidade (int id)
+    {
+        var faturas = await _mensalidadeRepository.ListarMensalidadesAsync();
+        var faturaEncontrada = faturas.FirstOrDefault(m => m.Id == id);
+
+        if (faturaEncontrada == null)
+        {
+            return NotFound();
+        }
+
+        ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
+
+        return View(faturaEncontrada);
+
+    }
+
+    [HttpPost]
+    public async Task <IActionResult> ConfirmarDelecao (int id)
+    {
+        try
+        {
+            await _mensalidadeRepository.ExcluirMensalidadeAsync(id);
+            return RedirectToAction("Index");
+        }
+        catch(Exception excecao)
+        {
+            ViewBag.Erro = "Hmm.. parece que não foi possível deletar essa mensalidade. Erro: " + excecao.Message;
+
+            var todasFaturas = await _mensalidadeRepository.ListarMensalidadesAsync();
+            var fatura = todasFaturas.FirstOrDefault(m => m.Id == id);
+            return View("DeletarMensalidade", fatura);
+        }
+
+    }
 }

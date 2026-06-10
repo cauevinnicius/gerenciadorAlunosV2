@@ -3,6 +3,8 @@
 // com isso, seria feito uma variavel privada e uma publica. A publica seria tipo um "porteiro" e a privada a "balada"/objetivo (backing field). 
 // Guard Clause: validar tudo primeiro. Se der erro, aborte a missão. Se houver sucesso em todos os testes, conclua a missão com sucesso.
 
+using System.ComponentModel.DataAnnotations;
+
 namespace GerenciadorAlunosV2.Models;
 public class AlunoModel
 {
@@ -27,7 +29,9 @@ public class AlunoModel
     }
 
     private string _cpf;
-    public string Cpf
+    [MaxLength(11)]
+    [Display(@Name = "Cadastro De Pessoa Fisica")]
+    public string Cpf 
     {
         get
         {

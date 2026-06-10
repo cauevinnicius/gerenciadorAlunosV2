@@ -1,6 +1,7 @@
 @* primeira coisa foi aprender o que é o razor. Depois como inserir comentários. 
-basicamente é uma funcionalidade que podemos adicionar C# puro em HTML. *@
+basicamente é uma funcionalidade que podemos adicionar C# puro em HTML. 
 
+a ideia seria tipo um "contrato", em que o controller precisa nos enviar uma lista (ienumerable) de molde do tipo AlunoModel*@
 @model IEnumerable<GerenciadorAlunosV2.Models.AlunoModel>
 
 @{
@@ -9,7 +10,7 @@ basicamente é uma funcionalidade que podemos adicionar C# puro em HTML. *@
 
 <div class="container mt-4">
     <h2 class="mb-4">=== Relatório Geral de Alunos(as) ===</h2>
-
+    @*é o mesmo que a href="/Aluno/CadastrarAluno"*@
     <a asp-controller="Aluno" asp-action="CadastrarAluno" class="btn btn-primary mb-3">Cadastrar Novo Aluno</a>
 
     <div class="table-responsive">
@@ -44,6 +45,7 @@ basicamente é uma funcionalidade que podemos adicionar C# puro em HTML. *@
                             <td>@a.Email</td>
                             <td>@a.Celular</td>
                             <td>
+                                @*o asp-route-id é o q anexa o id do aluno no fim do link*@
                                 <a asp-controller="Aluno" asp-action="EditarAluno" asp-route-id="@a.Id" class="btn btn-sm btn-warning">Editar</a>
                                 <a asp-controller="Aluno" asp-action="DeletarAluno" asp-route-id="@a.Id" class="btn btn-sm btn-danger">Deletar</a>
                             </td>
