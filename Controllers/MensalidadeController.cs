@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 using GerenciadorAlunosV2.Models;
+using GerenciadorAlunosV2.ViewModels;
 using GerenciadorAlunosV2.Repositories;
 
 namespace GerenciadorAlunosV2.Controllers;
@@ -19,7 +20,7 @@ public class MensalidadeController : Controller
     }
 
     // msm ideia: pra simplificar, incialmente, uma listagem geral
-    public async Task <IActionResult> Index()
+    public async Task<IActionResult> Index()
     {
         var faturas = await _mensalidadeRepository.ListarMensalidadesAsync();
         ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
@@ -27,14 +28,14 @@ public class MensalidadeController : Controller
     }
 
     [HttpGet]
-    public async Task <IActionResult> LancarMensalidade()
+    public async Task<IActionResult> LancarMensalidade()
     {
         ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
         return View();
     }
 
     [HttpPost]
-    public async Task <IActionResult> LancarMensalidade(MensalidadeModel novaMensalidade)
+    public async Task<IActionResult> LancarMensalidade(MensalidadeModel novaMensalidade)
     {
         // aproveitei minha ideia de buscar os argumentexception setados no molde como fiz com a de alunos
         if (!ModelState.IsValid)
@@ -68,7 +69,7 @@ public class MensalidadeController : Controller
     // replicando o que escrevi lá na index da mensalidade: minha primeira ideia era uma nova página de confirmação de pagamento
     // dps achei mais interessante apenas clicar no botão e já mudar o status. Então eu só preciso de um post
     [HttpPost]
-    public async Task <IActionResult> PagarMensalidade (int id)
+    public async Task<IActionResult> PagarMensalidade(int id)
     {
         try
         {
@@ -96,7 +97,7 @@ public class MensalidadeController : Controller
     }
 
     [HttpGet]
-    public async Task <IActionResult> EditarMensalidade (int id)
+    public async Task<IActionResult> EditarMensalidade(int id)
     {
         // primeiro busco a mensalidade
         var faturas = await _mensalidadeRepository.ListarMensalidadesAsync();
@@ -114,13 +115,13 @@ public class MensalidadeController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditarMensalidade (MensalidadeModel faturaEditada)
+    public async Task<IActionResult> EditarMensalidade(MensalidadeModel faturaEditada)
     {
         // reaproveitei a validação que fiz na de cadastro.
         if (!ModelState.IsValid)
         {
             ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
-            
+
             var erro = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault();
             if (erro != null && erro.Exception != null)
             {
@@ -132,7 +133,7 @@ public class MensalidadeController : Controller
             }
             return View(faturaEditada);
         }
-        
+
         try
         {
             await _mensalidadeRepository.EditarMensalidadeAsync(faturaEditada);
@@ -147,8 +148,9 @@ public class MensalidadeController : Controller
     }
 
     [HttpGet]
-    public async Task <IActionResult> DeletarMensalidade (int id)
+    public async Task<IActionResult> DeletarMensalidade(int id)
     {
+        // primeiro eu busco uma mensalidade específica
         var faturas = await _mensalidadeRepository.ListarMensalidadesAsync();
         var faturaEncontrada = faturas.FirstOrDefault(m => m.Id == id);
 
@@ -156,28 +158,46 @@ public class MensalidadeController : Controller
         {
             return NotFound();
         }
+        //com a mensalidade "em maos", eu devo buscar o dono dela.
+        var buscaAluno = await _alunoRepository.SelecionarAsync(faturaEncontrada.AlunoId.ToString());
+        var alunoEncontrado = buscaAluno.FirstOrDefault();
+        if (alunoEncontrado == null)
+        {
+            return NotFound();
+        }
 
-        ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
+        //por fim, vou criar minha viewmodel
+        var viewModel = new MensalidadePerfilViewModel
+        {
+            IdMensalidade = faturaEncontrada.Id,
+            IdAluno = alunoEncontrado.Id,
+            NomeAluno = alunoEncontrado.Nome,
+            CpfAluno = alunoEncontrado.Cpf,
+            ValorMensalidade = faturaEncontrada.ValorMensalidade,
+            DataVencimento = faturaEncontrada.DataVencimento
+        };
 
-        return View(faturaEncontrada);
+        return View(viewModel);
 
     }
 
     [HttpPost]
-    public async Task <IActionResult> ConfirmarDelecao (int id)
+    public async Task<IActionResult> ConfirmarDelecao(int idMensalidade)
     {
         try
         {
-            await _mensalidadeRepository.ExcluirMensalidadeAsync(id);
+            await _mensalidadeRepository.ExcluirMensalidadeAsync(idMensalidade);
             return RedirectToAction("Index");
         }
-        catch(Exception excecao)
+        catch (Exception excecao)
         {
             ViewBag.Erro = "Hmm.. parece que não foi possível deletar essa mensalidade. Erro: " + excecao.Message;
 
-            var todasFaturas = await _mensalidadeRepository.ListarMensalidadesAsync();
-            var fatura = todasFaturas.FirstOrDefault(m => m.Id == id);
-            return View("DeletarMensalidade", fatura);
+            // so q aí, até agora q ainda nao fiz js, preciso reconstruir minha viewmodel pra segurança da tela não quebrar
+            var faturas = await _mensalidadeRepository.ListarMensalidadesAsync();
+            var faturaEncontrada = faturas.FirstOrDefault(m => m.Id == idMensalidade);
+
+            return View("DeletarMensalidade", faturaEncontrada);
         }
 
     }

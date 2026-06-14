@@ -1,0 +1,41 @@
+@model GerenciadorAlunosV2.ViewModels.MensalidadePerfilViewModel
+
+@{
+    ViewData["Title"] = "Deletar Mensalidade";
+}
+
+<div class="container mt-4">
+    <h2 class="text-danger">Excluir Mensalidade</h2>
+    <hr />
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger">
+            <strong>Hmm.. algo deu errado!</strong> @ViewBag.Erro
+        </div>
+    }
+
+    <div class="alert alert-warning">
+        <h4>Atenção!</h4>
+        <p>Você está prestes a excluir a mensalidade descrita abaixo. Esta ação não poderá ser desfeita.</p>
+    </div>
+
+    <div class="card mb-4" style="max-width: 500px;">
+        <div class="card-header">
+            <strong>Dados da Mensalidade</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>ID Mensalidade:</strong> @Model.IdMensalidade</li>
+            <li class="list-group-item"><strong>Aluno:</strong> @Model.NomeAluno</li>
+            <li class="list-group-item"><strong>CPF:</strong> @Model.CpfAluno</li>
+            <li class="list-group-item"><strong>Valor Mensalidade:</strong> @Model.ValorMensalidade</li>
+            <li class="list-group-item"><strong>Data Vencimento:</strong> @Model.DataVencimento</li>
+        </ul>
+    </div>
+
+    <form asp-controller="Mensalidade" asp-action="ConfirmarDelecao" method="post">
+        <input type="hidden" asp-for="IdMensalidade" />
+        <button type="submit" class="btn btn-danger">Sim, desejo realizar a exclusão!</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar e Voltar</a>
+    </form>
+</div>

@@ -1,4 +1,4 @@
-// meu molde de mensalidade
+// meu molde de mensalidade no DB
 namespace GerenciadorAlunosV2.Models;
 public class MensalidadeModel
 {
@@ -7,36 +7,6 @@ public class MensalidadeModel
     public DateTime DataVencimento { get; set; }
     // necessária a inclusão do ?, significando que é possível ser nula a data de pagamento.
     public DateTime? DataPagamento { get; set; }
-
-    private decimal _valorMensalidade;
-    public decimal ValorMensalidade
-    {
-        get { return _valorMensalidade; }
-        set
-        {
-            if (value < 0)
-            {
-                throw new ArgumentException("O valor da mensalidade não pode ser negativo.");
-            }
-            _valorMensalidade = value;
-        }
-    }
-
-    private string _status;
-    public string Status
-    {
-        get { return _status; }
-        set
-        {
-            string statusFormatado = value.ToLower().Trim();
-
-            // o status TEM que ser um desses três por causa do enum feito no banco.
-            if (statusFormatado != "pendente" && statusFormatado != "pago" && statusFormatado != "cancelado")
-            {
-                throw new ArgumentException("Status inválido. Use apenas: pendente, pago ou cancelado.");
-            }
-
-            _status = statusFormatado;
-        }
-    }
+    public decimal ValorMensalidade { get; set; }
+    public string Status { get; set; }    
 }

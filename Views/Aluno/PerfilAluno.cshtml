@@ -1,0 +1,76 @@
+@model GerenciadorAlunosV2.ViewModels.AlunoPerfilViewModel
+
+@{
+    ViewData["Title"] = "Perfil do Aluno";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Ficha do Aluno: @Model.NomeAluno</h2>
+        <div>
+            <a asp-controller="Aluno" asp-action="EditarAluno" asp-route-id="@Model.IdAluno" class="btn btn-warning">Editar Cadastro</a>
+            <a asp-controller="Aluno" asp-action="DeletarAluno" asp-route-id="@Model.IdAluno" class="btn btn-danger">Excluir Aluno</a>
+            <a asp-action="Index" class="btn btn-secondary">Voltar para Lista</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>Dados Pessoais</strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Nome: </strong> @Model.NomeAluno</li>
+                    <li class="list-group-item"><strong>CPF:</strong> @Model.CpfAluno</li>
+                    <li class="list-group-item"><strong>E-mail:</strong> @Model.EmailAluno</li>
+                    <li class="list-group-item"><strong>Celular:</strong> @Model.CelularAluno</li>
+                    <li class="list-group-item"><strong>Data de Nascimento:</strong> @Model.DataNascimentoAluno.ToShortDateString()</li>
+                    <li class="list-group-item"><strong>Cadastrado em:</strong> @Model.DataCadastroAluno.ToShortDateString()</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4 mb-3">Histórico de Mensalidades</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-secondary">
+                <tr>
+                    <th>ID Fatura</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Data Pagamento</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @*se o histórico de mensalidades for nulo ou estiver vazia, eu aviso o usuário q nao tem nada lançado*@
+                @if (Model.HistoricoMensalidades == null || !Model.HistoricoMensalidades.Any())
+                {
+                    <tr><td colspan="5" class="text-center py-3">Ainda não há nenhuma mensalidade lançada para este aluno!</td></tr>
+                }
+                else
+                {
+                    foreach (var m in Model.HistoricoMensalidades)
+                    {
+                        <tr>
+                            <td>@m.Id</td>
+                            <td>@m.ValorMensalidade.ToString("C")</td>
+                            <td>@m.DataVencimento.ToShortDateString()</td>
+                            @*essa loucura aqui de baixo eu pedi ajuda pro Gemini. Esses dois ?? após se chama Operador de Coalescência.
+                            basicamente seria: se a data de pagamento for nula, não de pau (DataPagamento?). Pule pro plano B (??) e apresente tracinhos ("---")*@
+                            <td>@(m.DataPagamento?.ToShortDateString() ?? "---")</td>
+                            <td>
+                                @if(m.Status == "pendente") { <span class="badge bg-warning text-dark">Pendente</span> }
+                                else if(m.Status == "pago") { <span class="badge bg-success">Pago</span> }
+                                else { <span class="badge bg-danger">Cancelado</span> }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

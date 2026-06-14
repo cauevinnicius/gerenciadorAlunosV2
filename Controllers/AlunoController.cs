@@ -1,6 +1,6 @@
 // aqui seria tipo como se fosse um "garçom", mas que busca e entrega dados.
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using GerenciadorAlunosV2.ViewModels;
 using GerenciadorAlunosV2.Models; 
 using GerenciadorAlunosV2.Repositories; 
 
@@ -9,9 +9,12 @@ namespace GerenciadorAlunosV2.Controllers;
 public class AlunoController : Controller
 {
     private readonly AlunoRepository _alunoRepository;
-    public AlunoController(AlunoRepository alunoRepository)
+    // na minha nova funcionalidade de ver o perfil do aluno, tive q injetar o repositorio de mensalidade tb
+    private readonly MensalidadeRepository _mensalidadeRepository;
+    public AlunoController(AlunoRepository alunoRepository, MensalidadeRepository mensalidadeRepository)
     {
         _alunoRepository = alunoRepository;
+        _mensalidadeRepository = mensalidadeRepository;
     }
 
     // essa seria tipo a ação principal da minha página inicial
@@ -19,8 +22,47 @@ public class AlunoController : Controller
     {
         // crio uma variavel pra pedir os dados pro meu db
         var alunosDoBanco = await _alunoRepository.ListarAsync();
-        // depois eu "entrego" essa variavel q chamei de alunosDoBanco pra View
-        return View(alunosDoBanco);
+        // aqui que entra a situação da ViewModel. Crio uma variavel pra exibir efetivamente o meu alunosDoBanco
+        // uso o LINQ pra fazer um select e crio um objeto "a" e faço o respectivo mapeamento 
+        var alunosExibidos = alunosDoBanco.Select(a => new AlunoListaViewModel
+        {
+            IdAluno = a.Id,
+            NomeAluno = a.Nome,
+            CpfAluno = a.Cpf,
+            EmailAluno = a.Email,
+            CelularAluno = a.Celular
+        }).ToList();
+        // depois eu "entrego" essa variavel q chamei de alunosExibidos pra View
+        return View(alunosExibidos);
+    }
+
+    [HttpGet]
+    public async Task <IActionResult> PerfilAluno (int id)
+    {
+        var buscaAluno = await _alunoRepository.SelecionarAsync(id.ToString());
+        var aluno = buscaAluno.FirstOrDefault();
+
+        if (aluno == null)
+        {
+            return NotFound();
+        }
+
+        var buscaMensalidade = await _mensalidadeRepository.ListarMensalidadesAsync();
+        var historicoMensalidade = buscaMensalidade.Where(m => m.AlunoId == id).ToList();
+
+        var viewModel = new AlunoPerfilViewModel
+        {
+            IdAluno = aluno.Id,
+            NomeAluno = aluno.Nome,
+            CpfAluno = aluno.Cpf,
+            EmailAluno = aluno.Email,
+            CelularAluno = aluno.Celular,
+            DataNascimentoAluno = aluno.DataNascimento,
+            DataCadastroAluno = aluno.DataCadastro,
+            HistoricoMensalidades = historicoMensalidade
+        };
+
+        return View(viewModel);
     }
 
     // pro método de cadastrar um novo aluno, primeiro eu vou ter que fazer um httpget pra aparecer uma tela sem preenchimento ao usuário.
@@ -75,7 +117,7 @@ public class AlunoController : Controller
     public async Task <IActionResult> EditarAluno (int id)
     {
         // como eu tenho um get, já vou aproveitar minha SelecionarAsync q já tinha feito no outro projeto. Pra relembrar, vai retornar uma lista com o primeiro id q bater
-        // uma situação importante pra eu não esquecer: estava colocando inicialmente a dupla possibilidade (ou id ou nome), porém estava dando erro. 
+        // uma situação importante pra eu não esquecer: estava colocando inicialmente a dupla possibilidade (ou id ou nome), porém estava dando erro [...] 
         // [...] Ocorre que meu usuário já está vendo uma lista e vai selecionar aquele aluno. Consequentemente,  URL precisaa ter um id único. 
         var busca = await _alunoRepository.SelecionarAsync(id.ToString());
         var alunoEncontrado = busca.FirstOrDefault();
@@ -112,7 +154,10 @@ public class AlunoController : Controller
         {
             // mando o aluno editado pro meu repository fazer o uptade por meio do AlterarAsync
             await _alunoRepository.AlterarAsync(alunoEditado);
-            return RedirectToAction("Index"); 
+            // quando eu fiz minha implementação do PerfilAluno, invés de voltar pra index, volto pra tela q o aluno teve sua edição
+            // dai eu me deparei com o OBJETO ANONIMO: um "envelope" temporário e sem nome, que servirá pra transportar meu dado
+            // a minha propriedade id precisa ser idêntica ao nome do parâmetro que o PerfilAluno (int id) espera receber.
+            return RedirectToAction("PerfilAluno", new { id = alunoEditado.Id}); 
         }
         catch (ArgumentException excecao)
         {

@@ -29,7 +29,7 @@
                 </tr>
             </thead>
             <tbody>
-                // uma condicional pra que apareça uma mensagem ao usuário quando não tiver mensalidades cadastradas
+                @*uma condicional pra que apareça uma mensagem ao usuário quando não tiver mensalidades cadastradas*@
                 @if (!Model.Any())
                 {
                     <tr>
@@ -76,8 +76,7 @@
                                     </form>
                                 }
                                 <a asp-controller="Mensalidade" asp-action="EditarMensalidade" asp-route-id="@m.Id" class="btn btn-sm btn-warning">Editar</a>
-                                <a asp-controller="Mensalidade" asp-action="Deletar" asp-route-id="@m.Id"
-                                   class="btn btn-sm btn-danger">Excluir</a>
+                                <a asp-controller="Mensalidade" asp-action="DeletarMensalidade" asp-route-id="@m.Id" class="btn btn-sm btn-danger">Excluir</a>
                             </td>
                         </tr>
                     }
