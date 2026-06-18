@@ -62,7 +62,7 @@ app.MapStaticAssets();
 // definição da minha rota padrão
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Usuario}/{action=Registrar}/{id?}")
+    pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 

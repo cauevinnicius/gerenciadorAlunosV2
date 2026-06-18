@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using GerenciadorAlunosV2.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 // Através dos Contexts eu posso criar e/ou gerenciar as minhas tabelas do meu DB
 namespace GerenciadorAlunosV2.Contexts;
 
-public class GerenciadorAlunosDbContext : DbContext
+// com o Identity, eu passei a herdar de IdentityDbContext
+public class GerenciadorAlunosDbContext : IdentityDbContext <IdentityUser>
 {
     // Dúvida: a DbSet está referenciando a minha classe molde Aluno.cs e a Mensalidade.cs e dando os nomes de "Alunos" e "Mensalidades"?
     // R: O DbSet está sim referenciando os moldes, pois representa a tabela como um todo. A "Alunos" seria a variável que será utilizada para acessar a referida tabela.
@@ -12,7 +15,7 @@ public class GerenciadorAlunosDbContext : DbContext
     public DbSet<AlunoModel> Alunos { get; set; }
     public DbSet<MensalidadeModel> Mensalidades { get; set; }
     public DbSet<UsuarioModel> Usuarios { get; set; }
-
+    
     // Dúvida: seria um construtor padrão?
     // R: Sim. A classe GerenciadorAlunosContext herda da classe DbContext. O DbContextOptions é o pacote de configurações que contém a minha string de conexão com o MySQL.
     // E o que é o : base(options)?
@@ -25,6 +28,24 @@ public class GerenciadorAlunosDbContext : DbContext
     // O ModelBuilder é a ferramenta que será utilizada para dar ordens sobre a estrutura do banco.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // aqui ta a cirurgia q tive que pedi ajuda pra IA pra fazer. Lembrando que o MYSQL não tem uma cadeia de textos nativamente (string[])
+        base.OnModelCreating(modelBuilder);
+
+        // vou sair procurando por colunas do tipo "string[]"
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            var propriedadesArray = entityType.GetProperties()
+                .Where(p => p.ClrType == typeof(string[]));
+
+            foreach (var propriedade in propriedadesArray)
+            {
+                // transformar o Array ["A", "B"] na string "A;B" para salvar no banco
+                propriedade.SetValueConverter(
+                    new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<string[], string>(
+                        array => string.Join(";", array),
+                        texto => texto.Split(";", System.StringSplitOptions.RemoveEmptyEntries)));
+            }
+        }
         // Mapeamento da tabela Alunos
         modelBuilder.Entity<AlunoModel>().ToTable("alunos");
         modelBuilder.Entity<AlunoModel>().Property(a => a.Id).HasColumnName("id");
@@ -42,11 +63,5 @@ public class GerenciadorAlunosDbContext : DbContext
         modelBuilder.Entity<MensalidadeModel>().Property(m => m.Status).HasColumnName("status");
         modelBuilder.Entity<MensalidadeModel>().Property(m => m.DataPagamento).HasColumnName("data_pagamento");
 
-        modelBuilder.Entity<UsuarioModel>().ToTable("usuarios");
-        // estava tendo problemas pela falta de identificação da minha primary key nessa tabela
-        modelBuilder.Entity<UsuarioModel>().HasKey(u => u.UserId);
-        modelBuilder.Entity<UsuarioModel>().Property(u => u.UserId).HasColumnName("userId");
-        modelBuilder.Entity<UsuarioModel>().Property(u => u.Username).HasColumnName("username");
-        modelBuilder.Entity<UsuarioModel>().Property(u => u.HashPassword).HasColumnName("password");
     }
 }

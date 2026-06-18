@@ -1,11 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 namespace GerenciadorAlunosV2.Models;
 
-public class UsuarioModel
+public class UsuarioModel : IdentityUser
 {
-    public int UserId { get; set; }  
-    // quis colocar que isso fosse obrigatório para prevenir.
-    public required string Username { get; set; }
-    public required string HashPassword { get; set; }
-
+    public string NomeCompleto { get; set; }
 }
