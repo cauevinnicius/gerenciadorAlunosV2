@@ -1,0 +1,27 @@
+@using GerenciadorAlunosV2.ViewModels;
+@model VerificarEmailViewModel;
+
+@{
+    ViewData["Title"] = "Verificar Email";
+    Layout = "~/Views/Shared/_ContaUsuarioLayout.cshtml";
+
+}
+<div class="conta-container">
+    <div class="conta-box">
+        <h2 class="text-center mb-4">Verificar Email</h2>
+        <form asp-action="VerificarEmail" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">E-mail</label>
+                <input asp-for="Email" class="form-control" placeholder="Digite seu e-mail" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <input type="submit" value="Verificar Email" class="btn btn-success w-100 p-2" />
+            <p class="text-center mt-2">Não possui uma conta? <a asp-controller="Usuario" asp-action="Registrar">Registre-se</a></p>
+            <div class="text-center">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Voltar</a>
+            </div>    
+        </form>
+    </div>
+</div>

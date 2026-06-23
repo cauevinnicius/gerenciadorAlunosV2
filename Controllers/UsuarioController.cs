@@ -21,6 +21,12 @@ public class UsuarioController : Controller
     }
 
     [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    [HttpGet]
     public IActionResult Registrar()
     {
         return View();
@@ -55,6 +61,11 @@ public class UsuarioController : Controller
         }
         
         return View(model);
+    }
+
+    public IActionResult VerificarEmail()
+    {
+        return View();
     }
 }
 
