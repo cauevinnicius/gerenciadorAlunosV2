@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GerenciadorAlunosV2.Contexts;
+using GerenciadorAlunosV2.Models;
 using GerenciadorAlunosV2.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<GerenciadorAlunosDbContext>(options => options.UseMySQL(connectionString));
 
 // agora com o Identity, tenho que builder os seus servicos. Faço de usuário padrão e perfis.
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => 
+builder.Services.AddIdentity<UsuarioModel, IdentityRole>(options => 
 {
     // aproveitei pra já passar uns parâmetros
     options.Password.RequireNonAlphanumeric = false;
@@ -28,9 +29,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     // se um usuário não logado tentar acessar uma página bloqueada, volta pro login
-    options.LoginPath = "/Conta/Login";
+    options.LoginPath = "/Usuario/Login";
     // se um usuário tentar acessar uma página q não tem privilégios suficientes, é direcionado p acesso negado
-    options.AccessDeniedPath = "/Conta/AcessoNegado";
+    options.AccessDeniedPath = "/Usuario/AcessoNegado";
     
 });
 

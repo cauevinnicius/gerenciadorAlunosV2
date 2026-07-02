@@ -1,0 +1,36 @@
+@using GerenciadorAlunosV2.ViewModels;
+@model AlterarSenhaViewModel;
+
+@{
+    ViewData["Title"] = "Alterar Senha";
+    Layout = "~/Views/Shared/_ContaUsuarioLayout.cshtml";
+
+}
+<div class="conta-container">
+    <div class="conta-box">
+        <h2 class="text-center mb-4">Alterar Senha</h2>
+        <form asp-action="AlterarSenha" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">E-mail</label>
+                <input asp-for="Email" class="form-control" placeholder="Digite seu e-mail" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NovaSenha" class="form-label">Nova Senha</label>
+                <input asp-for="NovaSenha" class="form-control" placeholder="Digite sua nova senha" />
+                <span asp-validation-for="NovaSenha" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ConfirmarNovaSenha" class="form-label">Confirmar Nova Senha</label>
+                <input asp-for="ConfirmarNovaSenha" class="form-control" placeholder="Digite sua nova senha novamente" />
+                <span asp-validation-for="ConfirmarNovaSenha" class="text-danger"></span>
+            </div>
+
+            <input type="submit" value="Confirmar" class="btn btn-success w-100 p-2" />
+            <div class="text-center">
+                <a asp-controller="Usuario" asp-action="VerificarEmail" class="text-decoration-none mt-3">Voltar</a>
+            </div>    
+        </form>
+    </div>
+</div>

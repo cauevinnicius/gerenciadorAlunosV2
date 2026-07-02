@@ -4,5 +4,6 @@ namespace GerenciadorAlunosV2.Models;
 
 public class UsuarioModel : IdentityUser
 {
-    public string NomeCompleto { get; set; }
+    [Required(ErrorMessage = "O campo {0} é obrigatório.")]
+    public string? NomeCompleto { get; set; } = string.Empty;
 }
