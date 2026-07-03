@@ -15,7 +15,15 @@
 </head>
 
 <body>
+
     @inject SignInManager<UsuarioModel> SignInManager
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+            <strong>Sucesso!</strong> @TempData["MensagemSucesso"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
     @if (SignInManager.IsSignedIn(User))
     {
         <header>

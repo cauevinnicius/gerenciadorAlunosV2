@@ -30,14 +30,37 @@ public class UsuarioController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        if (ModelState.IsValid)
+        
+        if (!ModelState.IsValid)
+        {
+            // procuro qual erro que a model gerou
+            var erro = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault();
+
+            if (erro != null && erro.Exception != null)
+            {
+                ViewBag.Erro = erro.Exception.Message; // aqui busca do ArgumentException
+            }
+            else if (erro != null)
+            {
+                ViewBag.Erro = erro.ErrorMessage;
+            }
+
+            return View(model);
+        }
+        
+        try
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Senha, model.LembrarMe, false);
             if (result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
             }
+
             ModelState.AddModelError(string.Empty, "E-mail ou senha inválidos!");
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, $"Ocorreu um erro ao tentar fazer login: {ex.Message}");
         }
 
         return View(model);
@@ -50,7 +73,7 @@ public class UsuarioController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Registrar(RegistroViewModel model)
+    public async Task<IActionResult> Registrar(NovoUsuarioViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -87,7 +110,7 @@ public class UsuarioController : Controller
     }
     
     [HttpPost]
-    public IActionResult VerificarEmail(VerificarEmailViewModel model)
+    public IActionResult VerificarEmail(VerificarEmailUsuarioViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -122,6 +145,7 @@ public class UsuarioController : Controller
                 var result = await _userManager.ResetPasswordAsync(user, token, model.NovaSenha);
                 if (result.Succeeded)
                 {
+                    TempData["MensagemSucesso"] = "Senha alterada com sucesso!";
                     return RedirectToAction("Login");
                 }
                 foreach (var error in result.Errors)

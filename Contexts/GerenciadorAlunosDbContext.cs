@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace GerenciadorAlunosV2.Contexts;
 
 // com o Identity, eu passei a herdar de IdentityDbContext
-public class GerenciadorAlunosDbContext : IdentityDbContext <IdentityUser>
+// antes era <IdentityUser>. mas como eu quis customizar essa tabela e incluir o nome completo, tenho que buscá-la
+public class GerenciadorAlunosDbContext : IdentityDbContext <UsuarioModel>
 {
     // Dúvida: a DbSet está referenciando a minha classe molde Aluno.cs e a Mensalidade.cs e dando os nomes de "Alunos" e "Mensalidades"?
     // R: O DbSet está sim referenciando os moldes, pois representa a tabela como um todo. A "Alunos" seria a variável que será utilizada para acessar a referida tabela.
@@ -14,7 +15,8 @@ public class GerenciadorAlunosDbContext : IdentityDbContext <IdentityUser>
     // R: Esses get e set seriam pertencentes à tabela, e não aos campos do Aluno e Mensalidade. As regras criadas para as duas ficam à salvo e respeitadas pelo EF.
     public DbSet<AlunoModel> Alunos { get; set; }
     public DbSet<MensalidadeModel> Mensalidades { get; set; }
-    public DbSet<UsuarioModel> Usuarios { get; set; }
+    // tive problemas com discriminator devido a criação de um molde para inclusao do nome completo do usuário. Por isso realizei o comentário (desuso)
+    //public DbSet<UsuarioModel> Usuarios { get; set; }
     
     // Dúvida: seria um construtor padrão?
     // R: Sim. A classe GerenciadorAlunosContext herda da classe DbContext. O DbContextOptions é o pacote de configurações que contém a minha string de conexão com o MySQL.
