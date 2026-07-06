@@ -29,3 +29,15 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.background-container{
+  background-image:url('../images/background.jpg');
+  background-size:cover;
+  background-position:center;
+  background-repeat:repeat-y;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:2rem 0;
+}

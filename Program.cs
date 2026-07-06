@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using GerenciadorAlunosV2.Contexts;
 using GerenciadorAlunosV2.Models;
 using GerenciadorAlunosV2.Repositories;
+using GerenciadorAlunosV2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 // o addscoped cria uma instância do repositório por requisição web
 builder.Services.AddScoped<AlunoRepository>();
 builder.Services.AddScoped<MensalidadeRepository>();
+builder.Services.AddScoped<DashboardService>();
 
 // preciso incluir os servicos do padrão mvc, q seriam minhas controllers e minhas views
 builder.Services.AddControllersWithViews();
