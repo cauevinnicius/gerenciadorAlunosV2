@@ -1,3 +1,4 @@
+
 @model GerenciadorAlunosV2.ViewModels.AlunoPerfilViewModel
 
 @{
@@ -27,7 +28,11 @@
                     <li class="list-group-item"><strong>E-mail:</strong> @Model.EmailAluno</li>
                     <li class="list-group-item"><strong>Celular:</strong> @Model.CelularAluno</li>
                     <li class="list-group-item"><strong>Data de Nascimento:</strong> @Model.DataNascimentoAluno.ToShortDateString()</li>
-                    <li class="list-group-item"><strong>Cadastrado em:</strong> @Model.DataCadastroAluno.ToShortDateString()</li>
+                    <li class="list-group-item"><strong>Rua:</strong> @Model.RuaAluno</li>
+                    <li class="list-group-item"><strong>Bairro:</strong> @Model.BairroAluno</li>
+                    <li class="list-group-item"><strong>Cidade:</strong> @Model.CidadeAluno</li>
+                    <li class="list-group-item"><strong>Estado (UF):</strong> @Model.EstadoAluno</li>
+                    <li class="list-group-item"><strong>CEP:</strong> @Model.CepAluno</li>
                 </ul>
             </div>
         </div>

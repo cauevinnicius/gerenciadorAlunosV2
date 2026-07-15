@@ -1,4 +1,5 @@
 // meu molde de mensalidade no DB
+using GerenciadorAlunosV2.Enums;
 namespace GerenciadorAlunosV2.Models;
 public class MensalidadeModel
 {
@@ -8,5 +9,5 @@ public class MensalidadeModel
     // necessária a inclusão do ?, significando que é possível ser nula a data de pagamento.
     public DateTime? DataPagamento { get; set; }
     public decimal ValorMensalidade { get; set; }
-    public string Status { get; set; }    
+    public StatusMensalidade Status { get; set; }    
 }

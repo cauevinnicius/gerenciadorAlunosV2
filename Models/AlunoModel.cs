@@ -27,7 +27,8 @@ public class AlunoModel
     [MaxLength(50)]
     public string Cidade { get; set; } = string.Empty;
     [MaxLength(2)]
-    public char Estado { get; set; } = ' ';
+    public string Estado { get; set; } = string.Empty;
+    
     [MaxLength(8)]
     public string Cep { get; set; } = string.Empty;
 

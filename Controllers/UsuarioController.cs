@@ -78,7 +78,7 @@ public class UsuarioController : Controller
         if (ModelState.IsValid)
         {
             // faço a criação de uma variável e instancio a Identity User. Vou usar username e email como email
-            var user = new UsuarioModel { UserName = model.Email, Email = model.Email, NomeCompleto = "Novo Usuario" };
+            var user = new UsuarioModel { UserName = model.Email, Email = model.Email, NomeCompleto = model.Nome };
 
             // o repositório do usermanager já tem um método de criar!
             var result = await _userManager.CreateAsync(user, model.Senha);

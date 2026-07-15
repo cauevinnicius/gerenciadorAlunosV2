@@ -44,16 +44,17 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Status da Mensalidade</label>
-                    <select asp-for="Status" class="form-select">
-                        <option value="pendente" selected>Pendente</option>
-                        <option value="pago">Pago</option>
-                        <option value="cancelado">Cancelado</option>
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" class="form-select"
+                            asp-items="Html.GetEnumSelectList<GerenciadorAlunosV2.Enums.StatusMensalidade>()">
+                        <option value="">Selecione um status...</option>
                     </select>
+
+                    <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
 
                 <button type="submit" class="btn btn-success">Salvar Lançamento</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancelar</a>
 
             </form>
         </div>

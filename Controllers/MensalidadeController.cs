@@ -5,6 +5,7 @@ using System;
 using GerenciadorAlunosV2.Models;
 using GerenciadorAlunosV2.ViewModels;
 using GerenciadorAlunosV2.Repositories;
+using GerenciadorAlunosV2.Enums;
 
 namespace GerenciadorAlunosV2.Controllers;
 
@@ -78,9 +79,9 @@ public class MensalidadeController : Controller
             var faturaEncontrada = faturas.FirstOrDefault(m => m.Id == id);
 
             // dai sim eu altero e faço o salvamento
-            if (faturaEncontrada != null && faturaEncontrada.Status == "pendente")
+            if (faturaEncontrada != null && faturaEncontrada .Status != StatusMensalidade.Pago)
             {
-                faturaEncontrada.Status = "pago";
+                faturaEncontrada.Status = StatusMensalidade.Pago;
                 faturaEncontrada.DataPagamento = DateTime.Now;
 
                 await _mensalidadeRepository.EditarMensalidadeAsync(faturaEncontrada);

@@ -17,21 +17,18 @@
 <body>
 
     @inject SignInManager<UsuarioModel> SignInManager
-    @if (TempData["MensagemSucesso"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
-            <strong>Sucesso!</strong> @TempData["MensagemSucesso"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
+    
     @if (SignInManager.IsSignedIn(User))
     {
         <header>
             <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
                 <div class="container-fluid">
-                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">Escola V2</a>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">GerenciadorAlunosV2</a>
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Página Inicial</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Aluno" asp-action="Index">Alunos</a>
                             </li>
@@ -41,12 +38,19 @@
                             </li>
                         </ul>
                         <form asp-controller="Usuario" asp-action="Logout" method="post" class="form-inline">
-                            <button type="submit" class="btn btn-link nav-link text-dark">Sair</button>
+                            <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
                         </form>
                     </div>
                 </div>
             </nav>
         </header>
+    }
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+            <strong>Sucesso!</strong> @TempData["MensagemSucesso"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     }
     <div class="container">
         <main role="main" class="pb-3">

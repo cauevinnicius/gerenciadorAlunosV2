@@ -1,17 +1,24 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @using GerenciadorAlunosV2.Models;
+@using GerenciadorAlunosV2.ViewModels;
 @inject SignInManager<UsuarioModel> SignInManager
+@inject UserManager<UsuarioModel> UserManager
+
+@*declaro que vou utilizar minha dashboard viewmodel*@
+@model DashboardViewModel
 
 @{
     ViewData["Title"] = "Página Inicial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @if (SignInManager.IsSignedIn(User))
 {
     <div class="container mt-4">
         <div class="mb-4">
-            <h2>Bem-vindo!</h2> @*queria user o identity.user name para dispor o nome do usuário, mas enfrentei problemas com possíveis situações nulas*@
-            <p>Esta é a página inicial do Gerenciador de Alunos v2.</p>
+            <h2>Bem-vindo, @((await UserManager.GetUserAsync(User))?.NomeCompleto ?? "")!</h2> @*queria user o identity.user
+        name para dispor o nome do usuário, mas enfrentei problemas com possíveis situações nulas*@
+            <p>bla bla bla bla </p>
         </div>
     </div>
     <div class="row g-4">
@@ -20,7 +27,7 @@
             <div class="card border-0 bg-primary text-white shadow-sm h-100">
                 <div class="card-body p-4">
                     <h6 class="text-uppercase small fw-bold opacity-75">Alunos Matriculados</h6>
-                    <h2 class="display-5 fw-bold my-2">@ViewBag.TotalAlunos</h2>
+                    <h2 class="display-5 fw-bold my-2">@Model?.TotalAlunos</h2>
                     <a asp-controller="Aluno" asp-action="Index"
                        class="text-white text-decoration-none small opacity-75 hover-opacity-100">
                         Ver listagem completa &rarr;
@@ -33,7 +40,7 @@
             <div class="card border-0 bg-warning text-dark shadow-sm h-100">
                 <div class="card-body p-4">
                     <h6 class="text-uppercase small fw-bold opacity-75">Mensalidades Pendentes</h6>
-                    <h2 class="display-5 fw-bold my-2">@ViewBag.TotalPendentes</h2>
+                    <h2 class="display-5 fw-bold my-2">@Model?.TotalPendentes</h2>
                     <a asp-controller="Mensalidade" asp-action="Index"
                        class="text-dark text-decoration-none small opacity-75">
                         Gerir cobranças &rarr;
@@ -46,7 +53,7 @@
             <div class="card border-0 bg-success text-white shadow-sm h-100">
                 <div class="card-body p-4">
                     <h6 class="text-uppercase small fw-bold opacity-75">Faturamento Recebido</h6>
-                    <h2 class="display-5 fw-bold my-2">@ViewBag.FaturamentoTotal.ToString("C")</h2>
+                    <h2 class="display-5 fw-bold my-2">@Model?.FaturamentoTotal.ToString("C")</h2>
                     <span class="small opacity-75">Atualizado em tempo real</span>
                 </div>
             </div>
@@ -58,19 +65,34 @@
         <h4>Ações Rápidas</h4>
         <div class="mt-3">
             <a asp-controller="Aluno" asp-action="CadastrarAluno" class="btn btn-outline-dark me-2">Novo Aluno</a>
-            <a asp-controller="Mensalidade" asp-action="CriarMensalidade" class="btn btn-outline-dark">Lançar
+            <a asp-controller="Mensalidade" asp-action="LancarMensalidade" class="btn btn-outline-dark">Lançar
                 Mensalidade</a>
+            </div>
         </div>
-    </div>
-}
+    }
 else
 {
-    <div class="container text-center mt-5 py-5">
-        <h1 class="display-4 fw-bold text-dark">Gerenciador de Alunos V2</h1>
-        <p class="lead text-muted mb-4">bla bla bla bla bla bla.</p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a asp-controller="Usuario" asp-action="Login" class="btn btn-primary btn-lg px-4 gap-3 fw-bold">Entrar</a>
-            <a asp-controller="Usuario" asp-action="Registrar" class="btn btn-outline-secondary btn-lg px-4">Criar Conta</a>
+    <div class="container py-5 my-5">
+        <div class="row align-items-center">
+            
+            <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0 pe-lg-5">
+                <h1 class="display-4 fw-bold text-dark mb-3">
+                    GerenciadorAlunosV2 <br /> Sua academia. 
+                    Seu jeito.
+                </h1>
+                <p class="lead text-muted mb-5">
+                    Gerencie várias contas de alunos, mensalidades e contatos em um único local. Disponível para desktop, dispositivos móveis e na web.
+                </p>
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-lg-start">
+                    <a asp-controller="Usuario" asp-action="Login" class="btn btn-dark btn-lg px-5 fw-bold rounded-1">Entrar</a>
+                    <a asp-controller="Usuario" asp-action="Registrar" class="btn btn-outline-dark btn-lg px-5 rounded-1">Criar conta</a>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <img src="~/images/background.jpg" class="img-fluid rounded shadow-lg" alt="Demonstração do Sistema" />
+            </div>
+            
         </div>
     </div>
 }

@@ -1,4 +1,5 @@
-@model IEnumerable<GerenciadorAlunosV2.Models.MensalidadeModel>
+@using GerenciadorAlunosV2.Enums
+@model IEnumerable<GerenciadorAlunosV2.ViewModels.MensalidadePerfilViewModel>
 
 @{
     ViewData["Title"] = "Relatório de Mensalidades";
@@ -41,19 +42,19 @@
                     @foreach (var m in Model)
                     {
                         // Procura o nome do aluno na lista (Se não achar, escreve "Desconhecido")
-                        string nomeAluno = alunos?.FirstOrDefault(a => a.Id == m.AlunoId)?.Nome ?? "Desconhecido";
+                        string nomeAluno = alunos?.FirstOrDefault(a => a.Id == m.IdAluno)?.Nome ?? "Desconhecido";
 
                         <tr>
-                            <td>@m.Id</td>
+                            <td>@m.IdMensalidade</td>
                             <td>@nomeAluno</td>
                             <td>@m.ValorMensalidade.ToString("C")</td>
-                            <td>@m.DataVencimento.ToShortDateString()</td>
+                            <td>@m.DataVencimento?.ToShortDateString()</td>
                             <td>
-                                @if (m.Status == "pendente")
+                                @if (m.Status == StatusEnum.StatusMensalidade.Pendente)
                                 {
                                     <span class="badge bg-warning text-dark">Pendente</span>
                                 }
-                                else if (m.Status == "pago")
+                                else if (m.Status == StatusEnum.StatusMensalidade.Pago)
                                 {
 
                                     <span class="badge bg-success">Pago</span>
@@ -68,15 +69,15 @@
                                 @* somente quem tiver com a mensalidade pendente terá a opção de pagar. primeiro eu fiz com que o usuário clicasse no botao e ai ia pra uma nova página de confirmação
                                 depois, pra melhorar a usabilidade, achei q fazia sentido só clicar em "pagar" e já mudar o status e o botão
                                 a solução que eu encontrei seria criar um mini formulario invisível. ficou bonito, mas meio ruim de usabilidade*@
-                                @if (m.Status == "pendente")
+                                @if (m.Status == StatusEnum.StatusMensalidade.Pendente)
                                 {
                                     <form asp-controller="Mensalidade" asp-action="PagarMensalidade" method="post" class="d-inline">
-                                        <input type="hidden" name="id" value="@m.Id" />
+                                        <input type="hidden" name="id" value="@m.IdMensalidade" />
                                         <button type="submit" class="btn btn-sm btn-info text-white">Pagar</button>
                                     </form>
                                 }
-                                <a asp-controller="Mensalidade" asp-action="EditarMensalidade" asp-route-id="@m.Id" class="btn btn-sm btn-warning">Editar</a>
-                                <a asp-controller="Mensalidade" asp-action="DeletarMensalidade" asp-route-id="@m.Id" class="btn btn-sm btn-danger">Excluir</a>
+                                <a asp-controller="Mensalidade" asp-action="EditarMensalidade" asp-route-id="@m.IdMensalidade" class="btn btn-sm btn-warning">Editar</a>
+                                <a asp-controller="Mensalidade" asp-action="DeletarMensalidade" asp-route-id="@m.IdMensalidade" class="btn btn-sm btn-danger">Excluir</a>
                             </td>
                         </tr>
                     }

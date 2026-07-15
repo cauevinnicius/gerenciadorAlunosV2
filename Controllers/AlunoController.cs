@@ -58,8 +58,12 @@ public class AlunoController : Controller
             EmailAluno = aluno.Email,
             CelularAluno = aluno.Celular,
             DataNascimentoAluno = aluno.DataNascimento,
-            DataCadastroAluno = aluno.DataCadastro,
-            HistoricoMensalidades = historicoMensalidade
+            HistoricoMensalidades = historicoMensalidade,
+            RuaAluno = aluno.Rua,
+            BairroAluno = aluno.Bairro,
+            CidadeAluno = aluno.Cidade,
+            EstadoAluno = aluno.Estado,
+            CepAluno = aluno.Cep
         };
 
         return View(viewModel);
@@ -75,7 +79,7 @@ public class AlunoController : Controller
     // depois, quando o usuário clicar em "salvar", preciso fazer um httppost pra isso
     [HttpPost]
     // faço um método assincrono pra cadastrar o aluno pq preciso pedir informações "de fora". Pego meu modelo e crio um objeto pra ele
-    public async Task <IActionResult> CadastrarAluno(AlunoModel novoAluno)
+    public async Task <IActionResult> CadastrarAluno(AlunoPerfilViewModel novoAluno)
     {
         // Como lá na minha Repository tinha os try/catch ainda do meu appconsole, nao tava dando pra entender o que tava errado na hora de cadastrar
         // Então eu retirei todos e pesquisei uma maneira mais eficiente de apresentar os erros ao usuário
@@ -99,8 +103,21 @@ public class AlunoController : Controller
         // se deu tudo certo, aí sim posso seguir pro banco
         try
         {
-            // como já tenho meu repository instanciado ali em cima, posso chamar o método pra cadastrar no banco o meu novoAluno
-            await _alunoRepository.CadastrarAsync(novoAluno);
+            var alunoModel = new AlunoModel
+            {
+                Nome = novoAluno.NomeAluno,
+                Cpf = novoAluno.CpfAluno,
+                Email = novoAluno.EmailAluno,
+                Celular = novoAluno.CelularAluno,
+                DataNascimento = novoAluno.DataNascimentoAluno,
+                Rua = novoAluno.RuaAluno,
+                Bairro = novoAluno.BairroAluno,
+                Cidade = novoAluno.CidadeAluno,
+                Estado = novoAluno.EstadoAluno,
+                Cep = novoAluno.CepAluno
+            };
+
+            await _alunoRepository.CadastrarAsync(alunoModel);
 
             // se deu td certo, a ideia seria retornar à tela principal
             return RedirectToAction("Index");
@@ -127,12 +144,27 @@ public class AlunoController : Controller
             return NotFound();
         }
 
-        return View(alunoEncontrado);
+        var viewModel = new AlunoPerfilViewModel
+        {
+            IdAluno = alunoEncontrado.Id,
+            NomeAluno = alunoEncontrado.Nome,
+            CpfAluno = alunoEncontrado.Cpf,
+            EmailAluno = alunoEncontrado.Email,
+            CelularAluno = alunoEncontrado.Celular,
+            DataNascimentoAluno = alunoEncontrado.DataNascimento,
+            RuaAluno = alunoEncontrado.Rua,
+            BairroAluno = alunoEncontrado.Bairro,
+            CidadeAluno = alunoEncontrado.Cidade,
+            EstadoAluno = alunoEncontrado.Estado,
+            CepAluno = alunoEncontrado.Cep
+        };
+
+        return View(viewModel);
     }
 
     // depois que o usuário digitou os dados q quer editar, eu vou fazer meu post.
     [HttpPost]
-    public async Task <IActionResult> EditarAluno (AlunoModel alunoEditado)
+    public async Task <IActionResult> EditarAluno (AlunoPerfilViewModel alunoEditado)
     {
         if (!ModelState.IsValid)
         {
@@ -152,12 +184,32 @@ public class AlunoController : Controller
         }
         try
         {
+            var busca = await _alunoRepository.SelecionarAsync(alunoEditado.IdAluno.ToString());
+            var aluno = busca.FirstOrDefault();
+
+            if (aluno == null)
+            {
+                ViewBag.Erro = "Aluno não encontrado.";
+                return View(alunoEditado);
+            }
+
+            aluno.Nome = alunoEditado.NomeAluno;
+            aluno.Cpf = alunoEditado.CpfAluno;
+            aluno.Email = alunoEditado.EmailAluno;
+            aluno.Celular = alunoEditado.CelularAluno;
+            aluno.DataNascimento = alunoEditado.DataNascimentoAluno;
+            aluno.Rua = alunoEditado.RuaAluno;
+            aluno.Bairro = alunoEditado.BairroAluno;
+            aluno.Cidade = alunoEditado.CidadeAluno;
+            aluno.Estado = alunoEditado.EstadoAluno;
+            aluno.Cep = alunoEditado.CepAluno;
+
             // mando o aluno editado pro meu repository fazer o uptade por meio do AlterarAsync
-            await _alunoRepository.AlterarAsync(alunoEditado);
+            await _alunoRepository.AlterarAsync(aluno);
             // quando eu fiz minha implementação do PerfilAluno, invés de voltar pra index, volto pra tela q o aluno teve sua edição
             // dai eu me deparei com o OBJETO ANONIMO: um "envelope" temporário e sem nome, que servirá pra transportar meu dado
             // a minha propriedade id precisa ser idêntica ao nome do parâmetro que o PerfilAluno (int id) espera receber.
-            return RedirectToAction("PerfilAluno", new { id = alunoEditado.Id}); 
+            return RedirectToAction("PerfilAluno", new { id = alunoEditado.IdAluno}); 
         }
         catch (ArgumentException excecao)
         {

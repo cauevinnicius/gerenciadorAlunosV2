@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-md-6">
             <form asp-controller="Mensalidade" asp-action="EditarMensalidade" method="post">
-                
+
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
@@ -45,17 +45,20 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Status</label>
-                    <select asp-for="Status" class="form-select">
-                        <option value="pendente">Pendente</option>
-                        <option value="pago">Pago</option>
-                        <option value="cancelado">Cancelado</option>
+                    <label asp-for="Status" class="form-label"></label>
+
+    
+                    <select asp-for="Status" class="form-select"
+                            asp-items="Html.GetEnumSelectList<GerenciadorAlunosV2.Enums.StatusMensalidade>()">
+                        <option value="">Selecione um status...</option>
                     </select>
+
+                    <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
 
                 <button type="submit" class="btn btn-warning">Salvar Alterações</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-                
+
             </form>
         </div>
     </div>
