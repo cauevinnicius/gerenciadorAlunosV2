@@ -50,11 +50,11 @@
                             <td>@m.ValorMensalidade.ToString("C")</td>
                             <td>@m.DataVencimento?.ToShortDateString()</td>
                             <td>
-                                @if (m.Status == StatusEnum.StatusMensalidade.Pendente)
+                                @if (m.Status == StatusMensalidade.Pendente)
                                 {
                                     <span class="badge bg-warning text-dark">Pendente</span>
                                 }
-                                else if (m.Status == StatusEnum.StatusMensalidade.Pago)
+                                else if (m.Status == StatusMensalidade.Pago)
                                 {
 
                                     <span class="badge bg-success">Pago</span>
@@ -69,7 +69,7 @@
                                 @* somente quem tiver com a mensalidade pendente terá a opção de pagar. primeiro eu fiz com que o usuário clicasse no botao e ai ia pra uma nova página de confirmação
                                 depois, pra melhorar a usabilidade, achei q fazia sentido só clicar em "pagar" e já mudar o status e o botão
                                 a solução que eu encontrei seria criar um mini formulario invisível. ficou bonito, mas meio ruim de usabilidade*@
-                                @if (m.Status == StatusEnum.StatusMensalidade.Pendente)
+                                @if (m.Status == StatusMensalidade.Pendente)
                                 {
                                     <form asp-controller="Mensalidade" asp-action="PagarMensalidade" method="post" class="d-inline">
                                         <input type="hidden" name="id" value="@m.IdMensalidade" />

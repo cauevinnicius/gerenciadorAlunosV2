@@ -79,7 +79,7 @@ public class MensalidadeController : Controller
             var faturaEncontrada = faturas.FirstOrDefault(m => m.Id == id);
 
             // dai sim eu altero e faço o salvamento
-            if (faturaEncontrada != null && faturaEncontrada .Status != StatusMensalidade.Pago)
+            if (faturaEncontrada != null && faturaEncontrada.Status != StatusMensalidade.Pago)
             {
                 faturaEncontrada.Status = StatusMensalidade.Pago;
                 faturaEncontrada.DataPagamento = DateTime.Now;
@@ -109,14 +109,22 @@ public class MensalidadeController : Controller
             return NotFound();
         }
 
-        // tenho q mandar minha lista de alunos tb
         ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
 
-        return View(faturaEncontrada);
+        var viewModel = new MensalidadePerfilViewModel{
+            IdMensalidade = faturaEncontrada.Id,
+            IdAluno = faturaEncontrada.AlunoId,
+            ValorMensalidade = faturaEncontrada.ValorMensalidade,
+            DataVencimento = faturaEncontrada.DataVencimento,
+            Status = faturaEncontrada.Status,
+            DataPagamento = faturaEncontrada.DataPagamento
+        };
+
+        return View(viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditarMensalidade(MensalidadeModel faturaEditada)
+    public async Task<IActionResult> EditarMensalidade(MensalidadePerfilViewModel faturaEditada)
     {
         // reaproveitei a validação que fiz na de cadastro.
         if (!ModelState.IsValid)
@@ -137,7 +145,20 @@ public class MensalidadeController : Controller
 
         try
         {
-            await _mensalidadeRepository.EditarMensalidadeAsync(faturaEditada);
+            var busca = await _mensalidadeRepository.ListarMensalidadesAsync();
+            var faturaOriginal = busca.FirstOrDefault(m => m.Id == faturaEditada.IdMensalidade);
+
+            if (faturaOriginal == null)
+            {
+                return NotFound();
+            }
+
+            faturaOriginal.ValorMensalidade = faturaEditada.ValorMensalidade;
+            faturaOriginal.DataVencimento = faturaEditada.DataVencimento ?? faturaOriginal.DataVencimento;
+            faturaOriginal.DataPagamento = faturaEditada.DataPagamento;
+            faturaOriginal.Status = faturaEditada.Status;
+            // antes estava como faturaEditada
+            await _mensalidadeRepository.EditarMensalidadeAsync(faturaOriginal);
             return RedirectToAction("Index");
         }
         catch (Exception excecao)

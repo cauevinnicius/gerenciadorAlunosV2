@@ -27,7 +27,7 @@ public class MensalidadeRepository
 
         if (mensalidade != null)
         {
-            mensalidade.Status = "pago";
+            mensalidade.Status = Enums.StatusMensalidade.Pago;
             mensalidade.DataPagamento = dataPagamento;
             await _context.SaveChangesAsync();
         }
@@ -41,7 +41,7 @@ public class MensalidadeRepository
     public async Task<List<MensalidadeModel>> VerificaPendenciasAsync(int alunoId)
     {
         return await _context.Mensalidades
-            .Where(m => m.AlunoId == alunoId && m.Status == "pendente")
+            .Where(m => m.AlunoId == alunoId && m.Status == Enums.StatusMensalidade.Pendente)
             .ToListAsync();
     }
 

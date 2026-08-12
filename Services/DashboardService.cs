@@ -1,6 +1,7 @@
 using GerenciadorAlunosV2.ViewModels;
 using GerenciadorAlunosV2.Repositories;
 using System.Linq;
+using GerenciadorAlunosV2.Models;
 
 // a camada de servicos faria o trabalho "pesado" de lógica e afins e entregaria para o meu Controller
 // isso seria o seguimento do principio SOLID - princípio da responsabilidade única
@@ -25,8 +26,8 @@ public class DashboardService
         var dashboardModel = new DashboardViewModel
         {
             TotalAlunos = alunos.Count,
-            TotalPendentes = faturas.Count(f => f.Status == "pendente"),
-            FaturamentoTotal = faturas.Where(f => f.Status == "pago").Sum(f => f.ValorMensalidade)
+            TotalPendentes = faturas.Count(f => f.Status.ToString() == "Pendente"),
+            FaturamentoTotal = faturas.Where(f => f.Status.ToString() == "Pago").Sum(f => f.ValorMensalidade)
         };
 
         return dashboardModel;

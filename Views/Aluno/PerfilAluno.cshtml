@@ -68,9 +68,22 @@
                             basicamente seria: se a data de pagamento for nula, não de pau (DataPagamento?). Pule pro plano B (??) e apresente tracinhos ("---")*@
                             <td>@(m.DataPagamento?.ToShortDateString() ?? "---")</td>
                             <td>
-                                @if(m.Status == "pendente") { <span class="badge bg-warning text-dark">Pendente</span> }
-                                else if(m.Status == "pago") { <span class="badge bg-success">Pago</span> }
-                                else { <span class="badge bg-danger">Cancelado</span> }
+                                @if ((int)m.Status == 1)
+                                {
+                                    <span class="badge bg-warning text-dark">Pendente</span>
+                                }
+                                else if ((int)m.Status == 2)
+                                {
+                                    <span class="badge bg-success">Pago</span>
+                                }
+                                else if ((int)m.Status == 3)
+                                {
+                                    <span class="badge bg-info text-dark">Atrasado</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Cancelado</span>
+                                }
                             </td>
                         </tr>
                     }
