@@ -44,25 +44,33 @@
                     <input asp-for="DataNascimentoAluno" type="date" class="form-control" />
                 </div>
                 <div class="row">
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-5 mb-3">
                         <label for="Cep" class="form-label">CEP</label>
-                        <input asp-for="CepAluno" type="text" id="Cep" name="Cep" class="form-control" maxlength="8" placeholder="Apenas numeros" />
+                        <input asp-for="CepAluno" type="text" name="Cep" class="form-control" maxlength="8" placeholder="Apenas numeros" />
+                    </div>
+                    <div class="col-md-7 mb-3">
+                        <label for="Rua" class="form-label">Rua/Avenida/Travessa</label>
+                        <input asp-for="RuaAluno" type="text" name="Rua" class="form-control" readonly />
                     </div>
                     <div class="col-md-5 mb-3">
-                        <label for="Rua" class="form-label">Rua/Avenida/Travessa</label>
-                        <input asp-for="RuaAluno" type="text" id="Rua" name="Rua" class="form-control" readonly />
+                        <label for="Numero" class="form-label">Número</label>
+                        <input asp-for="NumeroAluno" type="text" name="Numero" class="form-control" readonly />
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-7 mb-3">
+                        <label for="Complemento" class="form-label">Complemento</label>
+                        <input asp-for="ComplementoAluno" type="text" name="Complemento" class="form-control" readonly />
+                    </div>
+                    <div class="col-md-5 mb-3">
                         <label for="Bairro" class="form-label">Bairro</label>
-                        <input asp-for="BairroAluno" type="text" id="Bairro" name="Bairro" class="form-control" readonly />
+                        <input asp-for="BairroAluno" type="text" name="Bairro" class="form-control" readonly />
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-5 mb-3">
                         <label for="Cidade" class="form-label">Cidade</label>
-                        <input asp-for="CidadeAluno" type="text" id="Cidade" name="Cidade" class="form-control" readonly />
+                        <input asp-for="CidadeAluno" type="text" name="Cidade" class="form-control" readonly />
                     </div>
                     <div class="col-md-2 mb-3">
                         <label for="Estado" class="form-label">UF</label>
-                        <input asp-for="EstadoAluno" type="text" id="Estado" name="Estado" class="form-control" readonly />
+                        <input asp-for="EstadoAluno" type="text" name="Estado" class="form-control" readonly />
                     </div>
                 </div>
 

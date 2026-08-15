@@ -16,12 +16,11 @@ public class MensalidadePerfilViewModel
 
     [Required(ErrorMessage = "O valor é obrigatório")]
     [Display(Name = "Valor da Mensalidade")]
-    [DataType(DataType.Currency)] // Ajuda o HTML a saber que é dinheiro
     public decimal ValorMensalidade { get; set; }
 
     [Required(ErrorMessage = "A data de vencimento é obrigatória")]
     [Display(Name = "Data de Vencimento")]
-    [DataType(DataType.Date)] // Cria o calendário certinho na tela
+    [DataType(DataType.Date)] 
     public DateTime? DataVencimento { get; set; }
 
     [Required(ErrorMessage = "O status é obrigatório")]

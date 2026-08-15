@@ -24,8 +24,20 @@ public class MensalidadeController : Controller
     public async Task<IActionResult> Index()
     {
         var faturas = await _mensalidadeRepository.ListarMensalidadesAsync();
-        ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
-        return View(faturas);
+        var alunos = await _alunoRepository.ListarAsync();
+
+        // Mapeamos a Model para a ViewModel e já injetamos o nome do aluno aqui!
+        var viewModel = faturas.Select(f => new MensalidadePerfilViewModel
+        {
+            IdMensalidade = f.Id,
+            IdAluno = f.AlunoId,
+            NomeAluno = alunos.FirstOrDefault(a => a.Id == f.AlunoId)?.Nome ?? "Desconhecido",
+            ValorMensalidade = f.ValorMensalidade,
+            DataVencimento = f.DataVencimento,
+            Status = f.Status
+        }).ToList();
+
+        return View(viewModel);
     }
 
     [HttpGet]
@@ -111,7 +123,8 @@ public class MensalidadeController : Controller
 
         ViewBag.ListaAlunos = await _alunoRepository.ListarAsync();
 
-        var viewModel = new MensalidadePerfilViewModel{
+        var viewModel = new MensalidadePerfilViewModel
+        {
             IdMensalidade = faturaEncontrada.Id,
             IdAluno = faturaEncontrada.AlunoId,
             ValorMensalidade = faturaEncontrada.ValorMensalidade,

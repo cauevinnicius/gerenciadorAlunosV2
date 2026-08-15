@@ -111,6 +111,8 @@ public class AlunoController : Controller
                 Celular = novoAluno.CelularAluno,
                 DataNascimento = novoAluno.DataNascimentoAluno,
                 Rua = novoAluno.RuaAluno,
+                Numero = novoAluno.NumeroAluno,
+                Complemento = novoAluno.ComplementoAluno,
                 Bairro = novoAluno.BairroAluno,
                 Cidade = novoAluno.CidadeAluno,
                 Estado = novoAluno.EstadoAluno,

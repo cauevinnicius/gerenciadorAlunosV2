@@ -3,8 +3,6 @@
 
 @{
     ViewData["Title"] = "Relatório de Mensalidades";
-    // essa precisei de auxilio. Basicamente, pego a listagem de alunos q o controller enviou
-    var alunos = ViewBag.ListaAlunos as IEnumerable<GerenciadorAlunosV2.Models.AlunoModel>;
 }
 <div class="container mt-4">
     <h2 class="mb-4">=== Relatório Geral de Mensalidades ===</h2>
@@ -41,12 +39,9 @@
                 {
                     @foreach (var m in Model)
                     {
-                        // Procura o nome do aluno na lista (Se não achar, escreve "Desconhecido")
-                        string nomeAluno = alunos?.FirstOrDefault(a => a.Id == m.IdAluno)?.Nome ?? "Desconhecido";
-
                         <tr>
                             <td>@m.IdMensalidade</td>
-                            <td>@nomeAluno</td>
+                            <td>@m.NomeAluno</td>
                             <td>@m.ValorMensalidade.ToString("C")</td>
                             <td>@m.DataVencimento?.ToShortDateString()</td>
                             <td>
@@ -58,6 +53,11 @@
                                 {
 
                                     <span class="badge bg-success">Pago</span>
+                                }
+                                else if (m.Status == StatusMensalidade.Atrasado)
+                                {
+
+                                    <span class="badge bg-danger">Atrasado</span>
                                 }
                                 else
                                 {
@@ -85,4 +85,5 @@
             </tbody>
         </table>
     </div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-success">Voltar</a>
 </div>

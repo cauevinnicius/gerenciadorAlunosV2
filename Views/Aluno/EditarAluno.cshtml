@@ -56,6 +56,14 @@
                     @Html.EditorFor(model => model.RuaAluno, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
                 <div class="mb-3">
+                    @Html.LabelFor(model => model.NumeroAluno, new { @class = "form-label"})
+                    @Html.EditorFor(model => model.NumeroAluno, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="mb-3">
+                    @Html.LabelFor(model => model.ComplementoAluno, new { @class = "form-label"})
+                    @Html.EditorFor(model => model.ComplementoAluno, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="mb-3">
                     @Html.LabelFor(model => model.BairroAluno, new { @class = "form-label"})
                     @Html.EditorFor(model => model.BairroAluno, new { htmlAttributes = new { @class = "form-control" } })
                 </div>

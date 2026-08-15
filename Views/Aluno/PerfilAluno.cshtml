@@ -1,4 +1,3 @@
-
 @model GerenciadorAlunosV2.ViewModels.AlunoPerfilViewModel
 
 @{
@@ -9,8 +8,10 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Ficha do Aluno: @Model.NomeAluno</h2>
         <div>
-            <a asp-controller="Aluno" asp-action="EditarAluno" asp-route-id="@Model.IdAluno" class="btn btn-warning">Editar Cadastro</a>
-            <a asp-controller="Aluno" asp-action="DeletarAluno" asp-route-id="@Model.IdAluno" class="btn btn-danger">Excluir Aluno</a>
+            <a asp-controller="Aluno" asp-action="EditarAluno" asp-route-id="@Model.IdAluno"
+               class="btn btn-warning">Editar Cadastro</a>
+            <a asp-controller="Aluno" asp-action="DeletarAluno" asp-route-id="@Model.IdAluno"
+               class="btn btn-danger">Excluir Aluno</a>
             <a asp-action="Index" class="btn btn-secondary">Voltar para Lista</a>
         </div>
     </div>
@@ -27,68 +28,69 @@
                     <li class="list-group-item"><strong>CPF:</strong> @Model.CpfAluno</li>
                     <li class="list-group-item"><strong>E-mail:</strong> @Model.EmailAluno</li>
                     <li class="list-group-item"><strong>Celular:</strong> @Model.CelularAluno</li>
-                    <li class="list-group-item"><strong>Data de Nascimento:</strong> @Model.DataNascimentoAluno.ToShortDateString()</li>
-                    <li class="list-group-item"><strong>Rua:</strong> @Model.RuaAluno</li>
-                    <li class="list-group-item"><strong>Bairro:</strong> @Model.BairroAluno</li>
-                    <li class="list-group-item"><strong>Cidade:</strong> @Model.CidadeAluno</li>
-                    <li class="list-group-item"><strong>Estado (UF):</strong> @Model.EstadoAluno</li>
-                    <li class="list-group-item"><strong>CEP:</strong> @Model.CepAluno</li>
-                </ul>
+                    <li class="list-group-item"><strong>Data de Nascimento:</strong>
+                        @Model.DataNascimentoAluno.ToShortDateString()</li>
+                        <li class="list-group-item"><strong>Rua:</strong> @Model.RuaAluno</li>
+                        <li class="list-group-item"><strong>Número:</strong> @Model.NumeroAluno</li>
+                        <li class="list-group-item"><strong>Complemento:</strong> @Model.ComplementoAluno</li>
+                        <li class="list-group-item"><strong>Bairro:</strong> @Model.BairroAluno</li>
+                        <li class="list-group-item"><strong>Cidade:</strong> @Model.CidadeAluno</li>
+                        <li class="list-group-item"><strong>Estado (UF):</strong> @Model.EstadoAluno</li>
+                        <li class="list-group-item"><strong>CEP:</strong> @Model.CepAluno</li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
-    <h3 class="mt-4 mb-3">Histórico de Mensalidades</h3>
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <thead class="table-secondary">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mn-0 text-dark">Histórico de Mensalidades</h3>
+            <div class="d-flex gap-2">
+                <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">Voltar para Lista</a>
+                <a asp-controller="Mensalidade" asp-action="LancarMensalidade" asp-route-alunoId="@Model.IdAluno"
+                   class="btn btn-dark shadow-sm">+ Lançar Nova Mensalidade</a>
+            </div>
+        </div>
+
+        <table class="table table-striped table-bordered text-center">
+            <thead class="table-dark">
                 <tr>
                     <th>ID Fatura</th>
                     <th>Valor</th>
                     <th>Vencimento</th>
                     <th>Data Pagamento</th>
                     <th>Status</th>
+                    <th>Ações</th> <!-- Nova coluna para os botões -->
                 </tr>
             </thead>
             <tbody>
-                @*se o histórico de mensalidades for nulo ou estiver vazia, eu aviso o usuário q nao tem nada lançado*@
-                @if (Model.HistoricoMensalidades == null || !Model.HistoricoMensalidades.Any())
+                @if (Model.HistoricoMensalidades.Any())
                 {
-                    <tr><td colspan="5" class="text-center py-3">Ainda não há nenhuma mensalidade lançada para este aluno!</td></tr>
-                }
-                else
-                {
-                    foreach (var m in Model.HistoricoMensalidades)
+                    @foreach (var fatura in Model.HistoricoMensalidades)
                     {
                         <tr>
-                            <td>@m.Id</td>
-                            <td>@m.ValorMensalidade.ToString("C")</td>
-                            <td>@m.DataVencimento.ToShortDateString()</td>
-                            @*essa loucura aqui de baixo eu pedi ajuda pro Gemini. Esses dois ?? após se chama Operador de Coalescência.
-                            basicamente seria: se a data de pagamento for nula, não de pau (DataPagamento?). Pule pro plano B (??) e apresente tracinhos ("---")*@
-                            <td>@(m.DataPagamento?.ToShortDateString() ?? "---")</td>
+                            <td>@fatura.Id</td>
+                            <td>@fatura.ValorMensalidade.ToString("C")</td>
+                            <td>@fatura.DataVencimento.ToShortDateString()</td>
+                            <td>@(fatura.DataPagamento?.ToShortDateString() ?? "-")</td>
                             <td>
-                                @if ((int)m.Status == 1)
-                                {
-                                    <span class="badge bg-warning text-dark">Pendente</span>
-                                }
-                                else if ((int)m.Status == 2)
-                                {
-                                    <span class="badge bg-success">Pago</span>
-                                }
-                                else if ((int)m.Status == 3)
-                                {
-                                    <span class="badge bg-info text-dark">Atrasado</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Cancelado</span>
-                                }
+                                <span class="badge bg-success">@fatura.Status</span>
+                            </td>
+                            <td>
+                                <a asp-controller="Mensalidade" asp-action="EditarMensalidade" asp-route-id="@fatura.Id"
+                                   class="btn btn-sm btn-warning">Editar</a>
+                                <a asp-controller="Mensalidade" asp-action="DeletarMensalidade" asp-route-id="@fatura.Id"
+                                   class="btn btn-sm btn-danger">Excluir</a>
                             </td>
                         </tr>
                     }
                 }
+                else
+                {
+                    <tr>
+                        <td colspan="6">Nenhuma mensalidade registrada para este aluno.</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
-</div>

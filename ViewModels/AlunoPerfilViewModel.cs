@@ -9,6 +9,8 @@ public class AlunoPerfilViewModel
 {
     public int IdAluno { get; set; }
 
+    public int IdMensalidade { get; set; }
+
     [Name("Nome")]
     [Display(Name = "Nome completo")]
     [Required(ErrorMessage = "O nome completo é obrigatório.")]
@@ -42,6 +44,14 @@ public class AlunoPerfilViewModel
     [Display(Name = "Rua/Avenida/Travessa/etc.")]
     [MaxLength(100)]
     public string RuaAluno { get; set; } = string.Empty;
+
+    [Name("Numero")]
+    [Display(Name = "Número")]
+    public string NumeroAluno { get; set; } = string.Empty;
+
+    [Name("Complemento")]
+    [Display(Name = "Complemento")]
+    public string ComplementoAluno { get; set; } = string.Empty;
 
     [Name("Bairro")]
     [Display(Name = "Bairro")]

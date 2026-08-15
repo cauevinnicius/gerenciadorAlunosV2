@@ -47,6 +47,7 @@ a ideia seria tipo um "contrato", em que o controller precisa nos enviar uma lis
                             <td>
                                 @*o asp-route-id é o q anexa o id do aluno no fim do link*@
                                 <a asp-controller="Aluno" asp-action="EditarAluno" asp-route-id="@a.IdAluno" class="btn btn-sm btn-warning">Editar</a>
+                                <a asp-controller="Mensalidade" asp-action="Index" asp-route-id="@a.IdAluno" class="btn btn-sm btn-info">Mensalidades</a>
                                 <a asp-controller="Aluno" asp-action="DeletarAluno" asp-route-id="@a.IdAluno" class="btn btn-sm btn-danger">Deletar</a>
                             </td>
                         </tr>
@@ -55,4 +56,5 @@ a ideia seria tipo um "contrato", em que o controller precisa nos enviar uma lis
             </tbody>
         </table>
     </div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-success">Voltar</a>
 </div>

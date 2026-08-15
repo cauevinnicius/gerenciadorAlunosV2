@@ -23,6 +23,9 @@ public class AlunoModel
     [MaxLength(100)]
     public string Rua { get; set; } = string.Empty;
     [MaxLength(100)]
+    public string Numero { get; set; } = string.Empty;
+    [MaxLength(100)]
+    public string Complemento { get; set; } = string.Empty;
     public string Bairro { get; set; } = string.Empty;
     [MaxLength(50)]
     public string Cidade { get; set; } = string.Empty;
