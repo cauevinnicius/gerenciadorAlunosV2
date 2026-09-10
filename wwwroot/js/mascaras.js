@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     
     // crio uma variavel para buscar o input do CPF pelo seu Id
-    const inputCpf = document.getElementById("Cpf"); 
+    const inputCpf = document.getElementById("CpfAluno"); 
 
     if (inputCpf) {
         
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    const inputCelular = document.getElementById("Celular");
+    const inputCelular = document.getElementById("CelularAluno");
 
     if (inputCelular) {
         inputCelular.addEventListener("input", function (e) {
