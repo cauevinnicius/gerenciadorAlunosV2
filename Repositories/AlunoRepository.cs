@@ -1,9 +1,10 @@
 using GerenciadorAlunosV2.Contexts;
+using GerenciadorAlunosV2.Interfaces;
 using GerenciadorAlunosV2.Models;
 using Microsoft.EntityFrameworkCore;
 namespace GerenciadorAlunosV2.Repositories;
 
-public class AlunoRepository
+public class AlunoRepository : IAlunoRepository
 {
     // Teremos um atributo para armazenar, agora, meu context, no qual possui as configurações de conexão.
     // Readonly -> modificações possíveis apenas dentro do método construtor

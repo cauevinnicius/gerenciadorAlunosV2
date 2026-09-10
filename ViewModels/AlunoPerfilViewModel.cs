@@ -72,5 +72,6 @@ public class AlunoPerfilViewModel
     [Display(Name = "CEP")]
     [MaxLength(8)]
     public string CepAluno { get; set; } = string.Empty;
-    public List<MensalidadeModel>? HistoricoMensalidades { get; set; }
+    // solução encontrada para conseguir buscar na tela PerfilAluno as suas devidas mensalidades
+    public List<MensalidadeModel>? HistoricoMensalidades { get; set; } = new List<MensalidadeModel>();
 }

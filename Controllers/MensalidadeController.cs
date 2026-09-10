@@ -4,17 +4,17 @@ using System.Linq;
 using System;
 using GerenciadorAlunosV2.Models;
 using GerenciadorAlunosV2.ViewModels;
-using GerenciadorAlunosV2.Repositories;
 using GerenciadorAlunosV2.Enums;
+using GerenciadorAlunosV2.Interfaces;
 
 namespace GerenciadorAlunosV2.Controllers;
 
 public class MensalidadeController : Controller
 {
-    private readonly MensalidadeRepository _mensalidadeRepository;
-    private readonly AlunoRepository _alunoRepository;
+    private readonly IMensalidadeRepository _mensalidadeRepository;
+    private readonly IAlunoRepository _alunoRepository;
 
-    public MensalidadeController(MensalidadeRepository mensalidadeRepository, AlunoRepository alunoRepository)
+    public MensalidadeController(IMensalidadeRepository mensalidadeRepository, IAlunoRepository alunoRepository)
     {
         _mensalidadeRepository = mensalidadeRepository;
         _alunoRepository = alunoRepository;

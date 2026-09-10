@@ -2,26 +2,26 @@
 using Microsoft.AspNetCore.Mvc;
 using GerenciadorAlunosV2.ViewModels;
 using GerenciadorAlunosV2.Models; 
-using GerenciadorAlunosV2.Repositories; 
+using GerenciadorAlunosV2.Interfaces;
 
 namespace GerenciadorAlunosV2.Controllers;
 
 public class AlunoController : Controller
 {
-    private readonly AlunoRepository _alunoRepository;
-    // na minha nova funcionalidade de ver o perfil do aluno, tive q injetar o repositorio de mensalidade tb
-    private readonly MensalidadeRepository _mensalidadeRepository;
-    public AlunoController(AlunoRepository alunoRepository, MensalidadeRepository mensalidadeRepository)
+    private readonly IAlunoService _alunoService;
+    private readonly IMensalidadeService _mensalidadeService;
+
+    public AlunoController(IAlunoService alunoService, IMensalidadeService mensalidadeService)
     {
-        _alunoRepository = alunoRepository;
-        _mensalidadeRepository = mensalidadeRepository;
+        _alunoService = alunoService;
+        _mensalidadeService = mensalidadeService;
     }
 
     // essa seria tipo a ação principal da minha página inicial
     public async Task<IActionResult> Index()
     {
         // crio uma variavel pra pedir os dados pro meu db
-        var alunosDoBanco = await _alunoRepository.ListarAsync();
+        var alunosDoBanco = await _alunoService.ListarAlunosAsync();
         // aqui que entra a situação da ViewModel. Crio uma variavel pra exibir efetivamente o meu alunosDoBanco
         // uso o LINQ pra fazer um select e crio um objeto "a" e faço o respectivo mapeamento 
         var alunosExibidos = alunosDoBanco.Select(a => new AlunoListaViewModel
@@ -39,7 +39,7 @@ public class AlunoController : Controller
     [HttpGet]
     public async Task <IActionResult> PerfilAluno (int id)
     {
-        var buscaAluno = await _alunoRepository.SelecionarAsync(id.ToString());
+        var buscaAluno = await _alunoService.SelecionarAsync(id.ToString());
         var aluno = buscaAluno.FirstOrDefault();
 
         if (aluno == null)
@@ -47,7 +47,7 @@ public class AlunoController : Controller
             return NotFound();
         }
 
-        var buscaMensalidade = await _mensalidadeRepository.ListarMensalidadesAsync();
+        var buscaMensalidade = await _mensalidadeService.ListarMensalidadesAsync();
         var historicoMensalidade = buscaMensalidade.Where(m => m.AlunoId == id).ToList();
 
         var viewModel = new AlunoPerfilViewModel
@@ -119,7 +119,7 @@ public class AlunoController : Controller
                 Cep = novoAluno.CepAluno
             };
 
-            await _alunoRepository.CadastrarAsync(alunoModel);
+            await _alunoService.CadastrarAsync(alunoModel);
 
             // se deu td certo, a ideia seria retornar à tela principal
             return RedirectToAction("Index");
@@ -138,7 +138,7 @@ public class AlunoController : Controller
         // como eu tenho um get, já vou aproveitar minha SelecionarAsync q já tinha feito no outro projeto. Pra relembrar, vai retornar uma lista com o primeiro id q bater
         // uma situação importante pra eu não esquecer: estava colocando inicialmente a dupla possibilidade (ou id ou nome), porém estava dando erro [...] 
         // [...] Ocorre que meu usuário já está vendo uma lista e vai selecionar aquele aluno. Consequentemente,  URL precisaa ter um id único. 
-        var busca = await _alunoRepository.SelecionarAsync(id.ToString());
+        var busca = await _alunoService.SelecionarAsync(id.ToString());
         var alunoEncontrado = busca.FirstOrDefault();
         
         if (alunoEncontrado == null)
@@ -186,7 +186,7 @@ public class AlunoController : Controller
         }
         try
         {
-            var busca = await _alunoRepository.SelecionarAsync(alunoEditado.IdAluno.ToString());
+            var busca = await _alunoService.SelecionarAsync(alunoEditado.IdAluno.ToString());
             var aluno = busca.FirstOrDefault();
 
             if (aluno == null)
@@ -207,7 +207,7 @@ public class AlunoController : Controller
             aluno.Cep = alunoEditado.CepAluno;
 
             // mando o aluno editado pro meu repository fazer o uptade por meio do AlterarAsync
-            await _alunoRepository.AlterarAsync(aluno);
+            await _alunoService.AlterarAsync(aluno);
             // quando eu fiz minha implementação do PerfilAluno, invés de voltar pra index, volto pra tela q o aluno teve sua edição
             // dai eu me deparei com o OBJETO ANONIMO: um "envelope" temporário e sem nome, que servirá pra transportar meu dado
             // a minha propriedade id precisa ser idêntica ao nome do parâmetro que o PerfilAluno (int id) espera receber.
@@ -232,7 +232,7 @@ public class AlunoController : Controller
     public async Task <IActionResult> DeletarAluno (int id)
     {
         // preciso q seja um id único. Lá eu tinha um string parametroBusca. 
-        var busca = await _alunoRepository.SelecionarAsync(id.ToString());
+        var busca = await _alunoService.SelecionarAsync(id.ToString());
         var alunoEncontrado = busca.FirstOrDefault();
 
         if (alunoEncontrado == null)
@@ -249,7 +249,7 @@ public class AlunoController : Controller
     {
         try
         {
-            await _alunoRepository.DeletarAsync(id);
+            await _alunoService.DeletarAsync(id);
             return RedirectToAction("Index");
         }
         catch(Exception excecao)
@@ -257,7 +257,7 @@ public class AlunoController : Controller
             ViewBag.Erro = "Hmm.. parece que não foi possível deletar esse aluno. Erro: " + excecao.Message;
 
             // se der erro, eu preciso buscar novamente o aluno pra apresentar na tela de erro
-            var busca = await _alunoRepository.SelecionarAsync(id.ToString());
+            var busca = await _alunoService.SelecionarAsync(id.ToString());
             return View("DeletarAluno", busca.FirstOrDefault());
         }
     }

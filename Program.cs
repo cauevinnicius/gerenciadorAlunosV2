@@ -4,6 +4,7 @@ using GerenciadorAlunosV2.Contexts;
 using GerenciadorAlunosV2.Models;
 using GerenciadorAlunosV2.Repositories;
 using GerenciadorAlunosV2.Services;
+using GerenciadorAlunosV2.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,9 +39,13 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 // preciso registrar meus repositorios na injeção de dependência do aspnet
 // o addscoped cria uma instância do repositório por requisição web
-builder.Services.AddScoped<AlunoRepository>();
-builder.Services.AddScoped<MensalidadeRepository>();
-builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
+builder.Services.AddScoped<IMensalidadeRepository, MensalidadeRepository>();
+
+// registro dos serviços da aplicação
+builder.Services.AddScoped<IAlunoService, AlunoService>();
+builder.Services.AddScoped<IMensalidadeService, MensalidadeService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // preciso incluir os servicos do padrão mvc, q seriam minhas controllers e minhas views
 builder.Services.AddControllersWithViews();

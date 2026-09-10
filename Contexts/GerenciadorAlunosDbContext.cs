@@ -16,7 +16,7 @@ public class GerenciadorAlunosDbContext : IdentityDbContext <UsuarioModel>
     public DbSet<AlunoModel> Alunos { get; set; }
     public DbSet<MensalidadeModel> Mensalidades { get; set; }
     // tive problemas com discriminator devido a criação de um molde para inclusao do nome completo do usuário. Por isso realizei o comentário (desuso)
-    //public DbSet<UsuarioModel> Usuarios { get; set; }
+    public DbSet<UsuarioModel> Usuarios { get; set; }
     
     // Dúvida: seria um construtor padrão?
     // R: Sim. A classe GerenciadorAlunosContext herda da classe DbContext. O DbContextOptions é o pacote de configurações que contém a minha string de conexão com o MySQL.
@@ -32,6 +32,10 @@ public class GerenciadorAlunosDbContext : IdentityDbContext <UsuarioModel>
     {
         // aqui ta a cirurgia q tive que pedi ajuda pra IA pra fazer. Lembrando que o MYSQL não tem uma cadeia de textos nativamente (string[])
         base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<MensalidadeModel>()
+        .Property(m => m.Status)
+        .HasConversion<string>();
 
         // vou sair procurando por colunas do tipo "string[]"
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

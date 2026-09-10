@@ -1,18 +1,17 @@
 using GerenciadorAlunosV2.ViewModels;
-using GerenciadorAlunosV2.Repositories;
 using System.Linq;
-using GerenciadorAlunosV2.Models;
+using GerenciadorAlunosV2.Interfaces;
 
 // a camada de servicos faria o trabalho "pesado" de lógica e afins e entregaria para o meu Controller
 // isso seria o seguimento do principio SOLID - princípio da responsabilidade única
 namespace GerenciadorAlunosV2.Services;
 
-public class DashboardService
+public class DashboardService : IDashboardService
 {
-    private readonly AlunoRepository _alunoRepository;
-    private readonly MensalidadeRepository _mensalidadeRepository;
+    private readonly IAlunoRepository _alunoRepository;
+    private readonly IMensalidadeRepository _mensalidadeRepository;
 
-    public DashboardService(AlunoRepository alunoRepository, MensalidadeRepository mensalidadeRepository)
+    public DashboardService(IAlunoRepository alunoRepository, IMensalidadeRepository mensalidadeRepository)
     {
         _alunoRepository = alunoRepository;
         _mensalidadeRepository = mensalidadeRepository;

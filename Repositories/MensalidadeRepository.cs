@@ -1,10 +1,11 @@
 using GerenciadorAlunosV2.Models;
 using GerenciadorAlunosV2.Contexts;
 using Microsoft.EntityFrameworkCore;
+using GerenciadorAlunosV2.Interfaces;
 
 namespace GerenciadorAlunosV2.Repositories;
 
-public class MensalidadeRepository
+public class MensalidadeRepository : IMensalidadeRepository
 
 {
     private readonly GerenciadorAlunosDbContext _context;
@@ -45,15 +46,15 @@ public class MensalidadeRepository
             .ToListAsync();
     }
 
-    public async Task<bool> EditarMensalidadeAsync(MensalidadeModel mensalidadeEditada)
+    public async Task EditarMensalidadeAsync(MensalidadeModel mensalidadeEditada)
     {
         _context.Mensalidades.Update(mensalidadeEditada);
-        return await _context.SaveChangesAsync() > 0; // salvar apenas se for maior que zero
+        await _context.SaveChangesAsync(); // salvar apenas se for maior que zero
     }
 
-    public async Task ExcluirMensalidadeAsync(int id)
+    public async Task ExcluirMensalidadeAsync(int idMensalidade)
     {
-        var mensalidade = await _context.Mensalidades.FindAsync(id);
+        var mensalidade = await _context.Mensalidades.FindAsync(idMensalidade);
         if (mensalidade != null)
         {
             _context.Mensalidades.Remove(mensalidade);
